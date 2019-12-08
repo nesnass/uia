@@ -26,7 +26,7 @@ When response is available - make a comparison: curate the uploaded image by ass
    * 'prov igjen' - try again
 
 
-  ### Dimitris' work - Image Recognition / Matching
+  ### Dimitrios' work - Image Recognition / Matching
 	* Investigate / identify systems for obtaining AI/ML image matching from a supplied collection, given a user-supplied image
 	* Outline the facilities of each system
 	* Select a system to begin with
