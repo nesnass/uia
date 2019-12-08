@@ -3,56 +3,80 @@
 Web application
 
 ## Spec
+* Prototype due: 21st Feburary.
+* Pilot in spring (April)
 
-1. Select image + textual content (title), allow addition of 'metadata' - colour, pattern etc - send it for analysis
-2. Response is a 'matching' image(s). Allow this to be re-done with the same user image, or a different image chosen instead.
-3. When response is available - make a comparison: curate the uploaded image by associating it with one or more works from a real art collection
+1. Poster screen.
 
-	* For now, provide a set of images based on random selection
-	* This will be improved to use AI/ML to form a response
+2. Select image, upload to our server and send it for analysis. Server saves the image (locally or to cloud storage), requests a matching collection image and also saves a record of the match to DB for future use
 
-3. Present a page that displays both images for comparison (Send URL back to user that links them to this)
+   - __!! Where can we access the image collection by API? Else obtain copies?__
+   -> Idunn to find out
 
+3. Response is a 'matching' image(s). Allow this to be re-done with the same user image, or a different image chosen instead.
+When response is available - make a comparison: curate the uploaded image by associating it with one or more works from a real art collection
 
-Hosting options?
- 	Heroku? Firebase?
-Database?
-Distribution?
-	App or web app?
-
-* Can images / museum image collection be accessed already at a URL? (rather than require cloud storage)
-* Does the user's image need to be kept? (rather than require cloud storage)
-
-- Three stages / screens
-- No need to retain user, but possibly set a cookie would be useful to allow returning to selections
-- ability to generate PDF for each matching, and download it. Use a separate URL for this?
+   * user image
+   * collection image artwork
+   * title of collection image artwork
+   * 'share' with museum (later, facebook and instagram)
+   * label/description of image artwork
+   * (later) sound file / curator speaking
+   * green box - where to find the art in museum
+   * 'prov igjen' - try again
 
 
+  ### Dimitris' work - Image Recognition / Matching
+	* Investigate / identify systems for obtaining AI/ML image matching from a supplied collection, given a user-supplied image
+	* Outline the facilities of each system
+	* Select a system to begin with
+	* Develop a model / training procedure in code that automates the image recognition
 
------------------------------
+4. 'Thankyou' for contribution
+
+5. Generate PDF for each matching and download.
+
+   - No need to retain user, but possibly set a cookie would be useful to allow returning to selections if using the same device
 
 
-B. Playlist
-
+# Prototype B: Playlist
 Immersive music + displays with authentic art
 
 
-Three pages again:  Queue, item detail, browse art to select
-1. Browse artworks
-2. Select art for display - goes to bottom of playlist
-option: combine more than one image.
+Four pages:  Poster screen, Queue, item detail, browse art to select
+
+1. User views the following pages as designed by Idunn
+   - Intro - static, but could also be a video
+   - Playlist 'feed'
+   - Collection selection
+   - Item selection from collection
+
+2. User can select 1 or 2 collection artworks for display -> it is added to bottom of playlist. Selection order is ignored
+   - __!! possible to remove an item?__
+3. Playlist is shared between all visitors
+4. Playlist advance:
+   Each item lasts 30 seconds
+   Timer counts down, at end next image moves to top
 
 
+# Hosting Options
 
+  __!! Investigate possible Norwegian hosting for Node server__
 
+  * Restrict access to any museum items stored on cloud to only our server
 
-We agree this functionality will be provided. Up front cost: 15,000.
-Additional functionality requested after this point will be additional, costed at an hourly rate
+  *	Render: https://render.com/  Render is straight forward and easy to set up, includes an SQL database. It does not include storage.
 
+  * Netlify: We could also use Netlify https://www.netlify.com/ which is similarly good. Netlify is ‘serverless’ - meaning we approach the idea from a paradigm of contacting the image matching and storage and database without a server in-between. This is a new way of thinking, but in the view of time available it may not be the fastest way to produce, unless you are concerned about hosting costs.
 
+  * Heroku: https://www.heroku.com/  This will run server, database and storage connection for us, is very familiar and deployment should be straight forward
 
--------------------------
+Estimated hosting costs (minimum, pay more for performance):
 
-# Libraries
+   * Render:  Static hosting + Server service + Database service + Amazon S3:  $15USD / month (Amazon S3 free for first 12 months)
 
-https://pdfkit.org/
+   * Netlify:  Free
+
+   * Heroku:  ‘Hobby Dyno’ + Database + S3 Storage inlcuded:  $12USD / month
+
+Despite the alternatives, for this project I recommend Heroku as the best choice for hosting. Of course we can move the project elsewhere later, if required.
