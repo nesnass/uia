@@ -1,54 +1,37 @@
 <template>
-  <div class="container">
+  <div
+    class="container mx-auto h-full flex flex-col justify-center items-center"
+  >
     <div>
-      <logo />
-      <h1 class="title">
-        uia
-      </h1>
-      <h2 class="subtitle">
-        Preparations for UIA workshop
-      </h2>
-      <div class="links">
-        <a href="https://nuxtjs.org/" target="_blank" class="button--green">
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
+      <h1 class="title">kunst?</h1>
     </div>
+    <p class="subtitle p-4">
+      når kunsten treffer, tror vi det er fordi det minner oss om noe i oss selv
+      eller omgivelsene våre som vi ikke får tak i på egen hånd
+    </p>
+    <BButton @click="prøve()" class="mt-4">prøve?</BButton>
   </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+import BButton from '~/components/Button.vue'
 
 export default {
   components: {
-    Logo
+    BButton
+  },
+  methods: {
+    prøve() {
+      this.$router.push('/select')
+    }
   }
 }
 </script>
 
 <style>
-/* Sample `apply` at-rules with Tailwind CSS
-.container {
+/* .container {
   @apply min-h-screen flex justify-center items-center text-center mx-auto;
-}
-*/
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
+} */
 .title {
   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
