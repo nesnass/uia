@@ -1,82 +1,63 @@
 <template>
   <div class="container flex flex-col justify-center">
     <PulseLoader :loading="loading"></PulseLoader>
-    <div v-show="!loading">
-      <input
-        id="file-input"
-        @change="handleFileChange($event)"
-        type="file"
-        style="display: none"
-      />
-      <BButton v-show="filesSelected === 0" class="mt-4">
-        <label for="file-input">Velg image</label>
-      </BButton>
-    </div>
+    <img id="preview" v-if="!loading && imagePreview" :src="imagePreview" />
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import BButton from '~/components/Button.vue'
 export default {
   components: {
-    BButton,
     PulseLoader
   },
   data() {
     return {
       filesSelected: 0,
-      loading: false
+      imagePreview: undefined,
+      loading: true
     }
   },
+  mounted() {
+    this.loading = true
+    const code = localStorage.getItem('userCode')
+    axios.get(`/api/latest?user-code=${code}`).then((data) => {
+      this.imagePreview = data.data.signedRequest
+      this.loading = false
+    })
+  },
   methods: {
-    handleFileChange(event) {
-      this.filesSelected = event.target.files.length
-      if (this.filesSelected > 0) {
-        this.loading = true
-        const file = event.target.files[0]
-        this.getSignedRequest(file)
-      }
-    },
-    getSignedRequest(file) {
+    /* getSignedRequest(file) {
       const xhr = new XMLHttpRequest()
       const userCode = localStorage.getItem('userCode') || ''
-      xhr.open(
-        'GET',
-        `/api/sign-s3?file-name=${file.name}&file-type=${file.type}&user-code=${userCode}`
-      )
+      xhr.open('GET', `/api/latest?user-code=${userCode}`)
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText)
-            this.uploadFile(file, response)
+            this.downloadFile(file, response)
           } else {
             alert('Could not get signed URL.')
-            this.loading = false
           }
         }
       }
       xhr.send()
     },
-    uploadFile(file, response) {
+    downloadFile(file, response) {
       const xhr = new XMLHttpRequest()
-      const code = localStorage.getItem('userCode')
-      xhr.open('PUT', response.signedRequest)
+      xhr.open('GET', response.signedRequest)
       xhr.onreadystatechange = () => {
-        this.loading = false
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            if (response.userCode && !code) {
-              localStorage.setItem('userCode', response.userCode)
-            }
-            this.$router.push('/latest')
+            this.imagePreview = response.url
           } else {
             alert('Could not upload file.')
           }
         }
       }
       xhr.send(file)
-    }
+    } */
   }
 }
 </script>

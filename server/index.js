@@ -7,11 +7,21 @@ const app = express()
 const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'
 
+// Database connection
+const { mongoose } = require('./database/database.js')
+const db = mongoose.connection
+db.on('error', console.error.bind(console, 'connection error:'))
+db.once('open', function() {
+  console.log('DB Connected')
+})
+
 async function start() {
   // Init Nuxt.js
   const nuxt = new Nuxt(config)
 
-  const { host, port } = nuxt.options.server
+  // const { host, port } = nuxt.options.server
+  const host = process.env.HOST || '0.0.0.0'
+  const port = process.env.PORT || 3000
 
   // Build only in dev mode
   if (config.dev) {
