@@ -1,3 +1,6 @@
+const bodyParser = require('body-parser')
+require('dotenv').config()
+
 module.exports = {
   mode: 'universal',
   /*
@@ -35,7 +38,9 @@ module.exports = {
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    // Doc: https://github.com/nuxt-community/dotenv-module
+    '@nuxtjs/dotenv'
   ],
   /*
    ** Nuxt.js modules
@@ -58,6 +63,15 @@ module.exports = {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
-  }
+    extend(config, ctx) {
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
+    }
+  },
+  serverMiddleware: [
+    bodyParser.json(),
+    // Will register file from project api directory to handle /api/* requests
+    { path: '~/api', handler: '~/server/api/index.js' }
+  ]
 }

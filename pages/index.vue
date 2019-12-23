@@ -1,15 +1,19 @@
 <template>
-  <div
-    class="container mx-auto h-full flex flex-col justify-center items-center"
-  >
-    <div>
-      <h1 class="title">kunst?</h1>
-    </div>
-    <p class="subtitle p-4">
+  <div class="container mx-auto h-full flex flex-col justify-center">
+    <p class="title pt-4 text-center">kunst?</p>
+    <p class="subtitle p-4 text-center">
       når kunsten treffer, tror vi det er fordi det minner oss om noe i oss selv
       eller omgivelsene våre som vi ikke får tak i på egen hånd
     </p>
-    <BButton @click="prøve()" class="mt-4">prøve?</BButton>
+    <div class="flex flex-col items-center">
+      <BButton @click="prøve()" class="mt-4 w-24">prøve?</BButton>
+      <BButton v-if="hasUserCode" @click="previousImage()" class="mt-4 w-40"
+        >forrige bilde mitt</BButton
+      >
+    </div>
+    <p class="text-sm absolute bottom-0">
+      Merk: Vi bruker cookies for å finne dine tidligere bilder
+    </p>
   </div>
 </template>
 
@@ -20,9 +24,25 @@ export default {
   components: {
     BButton
   },
+  data() {
+    return {
+      userCode: ''
+    }
+  },
+  computed: {
+    hasUserCode() {
+      return !!this.userCode
+    }
+  },
+  mounted() {
+    this.userCode = localStorage.getItem('userCode')
+  },
   methods: {
     prøve() {
       this.$router.push('/select')
+    },
+    previousImage() {
+      this.$router.push('/latest')
     }
   }
 }
@@ -36,15 +56,15 @@ export default {
   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   display: block;
-  font-weight: 300;
-  font-size: 100px;
+  font-weight: bold;
+  font-size: 4em;
   color: #35495e;
   letter-spacing: 1px;
 }
 
 .subtitle {
   font-weight: 300;
-  font-size: 42px;
+  font-size: 1.5em;
   color: #526488;
   word-spacing: 5px;
   padding-bottom: 15px;
