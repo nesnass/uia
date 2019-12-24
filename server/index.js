@@ -8,7 +8,7 @@ const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'
 
 // Database connection
-const { mongoose } = require('./database/database.js')
+const { mongoose } = require('./database/mongodb.js')
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function() {

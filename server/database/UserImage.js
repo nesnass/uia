@@ -2,7 +2,7 @@
  Designed and developed by Richard Nesnass
  */
 
-const { mongoose } = require('../database/database.js')
+const { mongoose } = require('./mongodb.js')
 
 const userImageSchema = new mongoose.Schema({
   userCode: { type: String },
