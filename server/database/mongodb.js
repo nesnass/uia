@@ -6,13 +6,14 @@ const mongoose = require('mongoose')
 
 // MongoDB configuration
 const passString = encodeURIComponent(process.env.MONGODB_PASSWORD)
-const mongoDBConnectionString =
-  `mongodb://${process.env.MONGODB_USER}:` +
-  `${passString}@` +
-  `${process.env.MONGODB_HOST}:` +
-  `${process.env.MONGODB_PORT}/` +
-  `${process.env.MONGODB_DATABASE_NAME}` +
-  `?authSource=${process.env.MONGODB_AUTHSOURCE}`
+const mongoDBConnectionString = process.env.MONGODB_URI
+  ? process.env.MONGODB_URI
+  : `mongodb://${process.env.MONGODB_USER}:` +
+    `${passString}@` +
+    `${process.env.MONGODB_HOST}:` +
+    `${process.env.MONGODB_PORT}/` +
+    `${process.env.MONGODB_DATABASE_NAME}` +
+    `?authSource=${process.env.MONGODB_AUTHSOURCE}`
 // Start a MongoDB connection
 mongoose.connect(
   mongoDBConnectionString,
