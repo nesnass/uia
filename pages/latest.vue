@@ -1,9 +1,30 @@
 <template>
   <div class="container flex flex-col justify-center">
     <PulseLoader :loading="loading"></PulseLoader>
-    <div class="flex flex-row">
-      <img id="preview" v-if="!loading && imagePreview" :src="imagePreview" />
-      <img id="museumImage" v-if="!loading" :src="museumImage" />
+    <div class="flex flex-col">
+      <div class="relative m-4">
+        <img id="preview" v-if="!loading && imagePreview" :src="imagePreview" />
+        <div
+          class="absolute flex items-center inset-x-0 bottom-0 h-8 p-2"
+          style="background: rgba(0, 0, 0, 0.45)"
+        >
+          <p class="text-white">My image caption</p>
+        </div>
+      </div>
+      <div class="relative flex justify-center m-4">
+        <img id="museumImage" v-if="!loading" :src="museumImage" />
+        <div
+          class="absolute flex items-center inset-x-0 bottom-0 h-8 p-2"
+          \style="background: rgba(0, 0, 0, 0.45)"
+        >
+          <p class="text-white">Museum image caption</p>
+        </div>
+      </div>
+      <p class="text-lg">Title of collection image artwork</p>
+      <p class="text-lg">Label/description of image artwork</p>
+      <div class="flex flex-col items-center mb-4">
+        <BButton @click="prøveIgjen()" class="mt-4 w-36">prov igjen</BButton>
+      </div>
     </div>
   </div>
 </template>
@@ -11,9 +32,11 @@
 <script>
 import axios from 'axios'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+import BButton from '~/components/Button.vue'
 export default {
   components: {
-    PulseLoader
+    PulseLoader,
+    BButton
   },
   data() {
     return {
@@ -33,36 +56,9 @@ export default {
     })
   },
   methods: {
-    /* getSignedRequest(file) {
-      const xhr = new XMLHttpRequest()
-      const userCode = localStorage.getItem('userCode') || ''
-      xhr.open('GET', `/api/latest?user-code=${userCode}`)
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText)
-            this.downloadFile(file, response)
-          } else {
-            alert('Could not get signed URL.')
-          }
-        }
-      }
-      xhr.send()
-    },
-    downloadFile(file, response) {
-      const xhr = new XMLHttpRequest()
-      xhr.open('GET', response.signedRequest)
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            this.imagePreview = response.url
-          } else {
-            alert('Could not upload file.')
-          }
-        }
-      }
-      xhr.send(file)
-    } */
+    prøveIgjen() {
+      this.$router.push('/select')
+    }
   }
 }
 </script>
