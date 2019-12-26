@@ -1,8 +1,18 @@
 const AWS = require('aws-sdk')
 const UserImage = require('../database/UserImage')
+const utilities = require('../utilities')
 
 AWS.config.update({ region: 'eu-north-1' })
 const S3_BUCKET = process.env.S3_BUCKET
+
+function requestMuseumImages(q, fq) {
+  const options = {
+    host: 'api.dimu.org',
+    path: `/api/solr/select?q=${q}&fq=${fq}&wt=json&api.key=demo`,
+    method: 'GET'
+  }
+  return utilities.httpRequest(options)
+}
 
 const getLatestImage = function(req, res) {
   const s3 = new AWS.S3()
@@ -24,10 +34,22 @@ const getLatestImage = function(req, res) {
       Bucket: S3_BUCKET,
       Key: fileName
     }
+    // S3 SDK does not support promise
     s3.getSignedUrlPromise('getObject', s3Params).then(
-      (data) => {
+      async (data) => {
+        const results = await requestMuseumImages('*', 'identifier.owner:NMK*')
+        const docs = results.response.docs
+        let selectedImage = ''
+
+        if (docs.length > 0) {
+          const randomIndex = utilities.getRandomInt(docs.length - 1)
+          const identifier =
+            docs[randomIndex]['artifact.defaultMediaIdentifier']
+          selectedImage = 'https://dms01.dimu.org/image/' + identifier
+        }
         const returnData = {
-          signedRequest: data
+          signedRequest: data,
+          museumImage: selectedImage
         }
         res.write(JSON.stringify(returnData))
         res.end()
