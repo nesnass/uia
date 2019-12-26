@@ -1,7 +1,10 @@
 <template>
   <div class="container flex flex-col justify-center">
     <PulseLoader :loading="loading"></PulseLoader>
-    <img id="preview" v-if="!loading && imagePreview" :src="imagePreview" />
+    <div class="flex flex-row">
+      <img id="preview" v-if="!loading && imagePreview" :src="imagePreview" />
+      <img id="museumImage" v-if="!loading" :src="museumImage" />
+    </div>
   </div>
 </template>
 
@@ -16,6 +19,7 @@ export default {
     return {
       filesSelected: 0,
       imagePreview: undefined,
+      museumImage: undefined,
       loading: true
     }
   },
@@ -24,6 +28,7 @@ export default {
     const code = localStorage.getItem('userCode')
     axios.get(`/api/latest?user-code=${code}`).then((data) => {
       this.imagePreview = data.data.signedRequest
+      this.museumImage = data.data.museumImage
       this.loading = false
     })
   },
