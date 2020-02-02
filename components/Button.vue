@@ -1,8 +1,8 @@
 <template>
   <button
-    :class="{ 'text-gray-400': disabled }"
+    :class="customClasses"
     @click="click"
-    class="p-4 bg-gray-200 rounded-lg justify-center"
+    class="p-4 rounded justify-center"
   >
     <span v-if="text" class="text-xl text-black">{{ text }}</span>
     <slot></slot>
@@ -24,10 +24,22 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    applyClasses: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {}
+  },
+  computed: {
+    customClasses() {
+      let classes = ''
+      classes += this.disabled ? 'text-gray-400 ' : ''
+      classes += this.applyClasses
+      return classes
+    }
   },
   methods: {
     click($event) {

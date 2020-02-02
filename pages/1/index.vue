@@ -1,8 +1,21 @@
 <template>
-  <div class="container mx-auto h-full w-full flex flex-col justify-center">
-    <div class="flex flex-row justify-around m-8">
-      <BButton @click="kunst()" class="mt-4 w-24">kunst?</BButton>
-      <BButton @click="kuratert()" class="mt-4 w-24">kuratert</BButton>
+  <div class="container mx-auto h-full flex flex-col justify-center">
+    <p class="title pt-4 text-center">kunst?</p>
+    <p class="subtitle p-4 text-center">
+      når kunsten treffer, tror vi det er fordi det minner oss om noe i oss selv
+      eller omgivelsene våre som vi ikke får tak i på egen hånd
+    </p>
+    <div class="flex flex-col items-center">
+      <BButton @click="prøve()" :applyClasses="'bg-gray-200'" class="mt-4 w-24"
+        >prøve?</BButton
+      >
+      <BButton
+        v-if="hasUserCode"
+        :applyClasses="'bg-gray-200'"
+        @click="previousImage()"
+        class="mt-4 w-40"
+        >forrige bilde mitt</BButton
+      >
     </div>
     <p class="text-sm absolute bottom-0">
       Merk: Vi bruker cookies for å finne dine tidligere bilder
@@ -31,11 +44,11 @@ export default {
     this.userCode = localStorage.getItem('userCode')
   },
   methods: {
-    kunst() {
-      this.$router.push('/1')
+    prøve() {
+      this.$router.push('/p1/select')
     },
-    kuratert() {
-      this.$router.push('/2')
+    previousImage() {
+      this.$router.push('/p1/latest')
     }
   }
 }

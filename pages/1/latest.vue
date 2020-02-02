@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     prøveIgjen() {
-      this.$router.push('/select')
+      this.$router.push('/p1/select')
     }
   }
 }

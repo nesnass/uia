@@ -69,7 +69,7 @@ export default {
             if (response.userCode && !code) {
               localStorage.setItem('userCode', response.userCode)
             }
-            this.$router.push('/latest')
+            this.$router.push('/p1/latest')
           } else {
             alert('Could not upload file.')
           }

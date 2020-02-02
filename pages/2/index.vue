@@ -1,8 +1,19 @@
 <template>
-  <div class="container mx-auto h-full w-full flex flex-col justify-center">
-    <div class="flex flex-row justify-around m-8">
-      <BButton @click="kunst()" class="mt-4 w-24">kunst?</BButton>
-      <BButton @click="kuratert()" class="mt-4 w-24">kuratert</BButton>
+  <div
+    class="container mx-auto h-full flex flex-col justify-center main-background"
+  >
+    <p class="title pt-4 text-center text-white">kuratert</p>
+    <p class="welcome p-4 text-center text-white">
+      Velkommen!
+    </p>
+    <p class="subtitle p-4 text-center text-white">
+      Her i KUNSTSILO har vi lyst til å overlate litt av kontrollen til deg.
+      Hvilke verk fra den pågående utstillingen vil du se nærmere på?
+    </p>
+    <div class="flex flex-col items-center">
+      <BButton @click="prøve()" :applyClasses="'bg-white'" class="mt-4 w-48"
+        >la meg kuratere</BButton
+      >
     </div>
     <p class="text-sm absolute bottom-0">
       Merk: Vi bruker cookies for å finne dine tidligere bilder
@@ -31,11 +42,11 @@ export default {
     this.userCode = localStorage.getItem('userCode')
   },
   methods: {
-    kunst() {
-      this.$router.push('/1')
+    prøve() {
+      this.$router.push('/p1/select')
     },
-    kuratert() {
-      this.$router.push('/2')
+    previousImage() {
+      this.$router.push('/p1/latest')
     }
   }
 }
@@ -51,19 +62,25 @@ export default {
   display: block;
   font-weight: bold;
   font-size: 4em;
-  color: #35495e;
   letter-spacing: 1px;
 }
 
 .subtitle {
   font-weight: 300;
   font-size: 1.5em;
-  color: #526488;
   word-spacing: 5px;
   padding-bottom: 15px;
 }
-
+.welcome {
+  font-weight: 100;
+  font-size: 2em;
+  word-spacing: 5px;
+  padding-bottom: 15px;
+}
 .links {
   padding-top: 15px;
+}
+.main-background {
+  background-color: #e65a5a;
 }
 </style>
