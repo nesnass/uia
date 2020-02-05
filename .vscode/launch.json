@@ -4,6 +4,15 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Edit JSON",
+      "program": "${workspaceFolder}/server/editJSONItems.js",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Launch Server",
       "program": "${workspaceFolder}/server/index.js",
       "skipFiles": [

@@ -1,8 +1,15 @@
 <template>
   <div class="container mx-auto h-full w-full flex flex-col justify-center">
     <div class="flex flex-row justify-around m-8">
-      <BButton @click="kunst()" class="mt-4 w-24">kunst?</BButton>
-      <BButton @click="kuratert()" class="mt-4 w-24">kuratert</BButton>
+      <BButton @click="kunst()" :applyClasses="'bg-gray-200'" class="mt-4 w-24"
+        >kunst?</BButton
+      >
+      <BButton
+        @click="kuratert()"
+        :applyClasses="'bg-gray-200'"
+        class="mt-4 w-24"
+        >kuratert</BButton
+      >
     </div>
     <p class="text-sm absolute bottom-0">
       Merk: Vi bruker cookies for å finne dine tidligere bilder

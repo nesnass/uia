@@ -1,7 +1,10 @@
+const http = require('http')
 const express = require('express')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
 const app = express()
+const server = http.createServer(app)
+const io = require('socket.io')(server)
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js')
@@ -37,7 +40,11 @@ async function start() {
   app.use(nuxt.render)
 
   // Listen the server
-  app.listen(port, host)
+  server.listen(port, host)
+
+  // Configure Playlist with Socket.io
+  require('./vjPlaylist.js').start(io)
+
   consola.ready({
     message: `Server listening on http://${host}:${port}`,
     badge: true

@@ -15,7 +15,8 @@ module.exports = {
         'uia-beige': '#F1ECE8',
         'uia-selected': '#8D8884',
         'uia-burgundy': '#330033',
-        'uia-lilla': '#4E1681'
+        'uia-lilla': '#4E1681',
+        'uia-pink': '#e65a5a'
       }
     },
     screens: {

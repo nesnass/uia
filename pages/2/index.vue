@@ -11,7 +11,7 @@
       Hvilke verk fra den pågående utstillingen vil du se nærmere på?
     </p>
     <div class="flex flex-col items-center">
-      <BButton @click="prøve()" :applyClasses="'bg-white'" class="mt-4 w-48"
+      <BButton @click="kuratere()" :applyClasses="'bg-white'" class="mt-4 w-48"
         >la meg kuratere</BButton
       >
     </div>
@@ -30,7 +30,8 @@ export default {
   },
   data() {
     return {
-      userCode: ''
+      userCode: '',
+      socket: undefined
     }
   },
   computed: {
@@ -42,11 +43,8 @@ export default {
     this.userCode = localStorage.getItem('userCode')
   },
   methods: {
-    prøve() {
-      this.$router.push('/p1/select')
-    },
-    previousImage() {
-      this.$router.push('/p1/latest')
+    kuratere() {
+      this.$router.push('/2/playlist')
     }
   }
 }

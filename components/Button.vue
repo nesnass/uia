@@ -35,9 +35,15 @@ export default {
   },
   computed: {
     customClasses() {
-      let classes = ''
-      classes += this.disabled ? 'text-gray-400 ' : ''
-      classes += this.applyClasses
+      const classes = {
+        'text-gray-400': this.disabled
+      }
+      const extraClasses = this.applyClasses.split(' ')
+      if (extraClasses) {
+        extraClasses.forEach((element) => {
+          classes[element] = true
+        })
+      }
       return classes
     }
   },
