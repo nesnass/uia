@@ -11,7 +11,7 @@ const GCP_KEY_FILENAME = process.env.GCP_KEY_FILENAME
 const SIMILARITY_API = process.env.SIMILARITY_API
 
 const config =
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV !== 'production'
     ? {
         projectId: GCP_PROJECT_ID,
         keyFilename: GCP_KEY_FILENAME
