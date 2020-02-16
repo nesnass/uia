@@ -52,13 +52,16 @@ Four pages:  Poster screen, Queue, item detail, browse art to select
    - Item selection from collection
 
 2. User can select 1 or 2 collection artworks for display -> it is added to bottom of playlist. Selection order is ignored
-   - __!! possible to remove an item?__
-3. Playlist is shared between all visitors
-4. Playlist advance:
+
+3. Can a user who placed an item also remove the item?
+-> No. then you would need user id, right? I do not think so. make it simple. the test during the workshop is more finding out how it feels to seemingly control the museumspace that surrounds both you and othhers
+
+1. Playlist is shared between all visitors
+2. Playlist advance:
    Each item lasts 30 seconds
    Timer countdown only shown on top image. No time on rest of images
    Timer counts down, at end next image moves to top
-5. Playlist item metadata:
+3. Playlist item metadata:
    Show separate screen or flip card over
    Metadata comes from Idunn's Excel sheets
 

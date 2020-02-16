@@ -86,7 +86,7 @@ export default {
   },
   mounted() {
     this.loading = true
-    const code = localStorage.getItem('userCode')
+    const code = window.localStorage.getItem('userCode')
     axios.get(`/api/latest?user-code=${code}`).then((data) => {
       this.userImage = data.data.userImage
       this.museumImage = data.data.museumImage

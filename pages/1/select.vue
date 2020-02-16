@@ -64,7 +64,7 @@ export default {
         })
     }, */
     uploadFile(file) {
-      const code = localStorage.getItem('userCode')
+      const code = window.localStorage.getItem('userCode')
       const formData = new FormData()
       formData.append('uploadedFile', file)
       axios
@@ -77,7 +77,7 @@ export default {
         .then((response) => {
           this.loading = false
           if (response.data.userCode && !code) {
-            localStorage.setItem('userCode', response.data.userCode)
+            window.localStorage.setItem('userCode', response.data.userCode)
           }
           this.$router.push('/1/latest')
         })

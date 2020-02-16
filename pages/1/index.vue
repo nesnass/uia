@@ -41,7 +41,7 @@ export default {
     }
   },
   mounted() {
-    this.userCode = localStorage.getItem('userCode')
+    this.userCode = window.localStorage.getItem('userCode')
   },
   methods: {
     prøve() {
