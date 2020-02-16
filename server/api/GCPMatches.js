@@ -13,10 +13,15 @@ const dimuRegular = JSON.parse(
   fs.readFileSync(`${dirPath}/data/museumItems.json`, 'utf8')
 ) */
 
-const database = new Firestore({
-  projectId: GCP_PROJECT_ID,
-  keyFilename: GCP_KEY_FILENAME
-})
+const config =
+  process.env.NODE_ENV === 'production'
+    ? {
+        projectId: GCP_PROJECT_ID,
+        keyFilename: GCP_KEY_FILENAME
+      }
+    : {}
+
+const database = new Firestore(config)
 
 const getLatestImage = function(req, res) {
   const userCode = req.searchParams.get('user-code')

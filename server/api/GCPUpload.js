@@ -10,15 +10,16 @@ const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID
 const GCP_KEY_FILENAME = process.env.GCP_KEY_FILENAME
 const SIMILARITY_API = process.env.SIMILARITY_API
 
-const storage = new Storage({
-  projectId: GCP_PROJECT_ID,
-  keyFilename: GCP_KEY_FILENAME
-})
+const config =
+  process.env.NODE_ENV === 'production'
+    ? {
+        projectId: GCP_PROJECT_ID,
+        keyFilename: GCP_KEY_FILENAME
+      }
+    : {}
 
-const database = new Firestore({
-  projectId: GCP_PROJECT_ID,
-  keyFilename: GCP_KEY_FILENAME
-})
+const storage = new Storage(config)
+const database = new Firestore(config)
 
 // Test that storage connection works
 async function testStorageConnection() {
