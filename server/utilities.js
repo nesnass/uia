@@ -1,7 +1,9 @@
 /*
  Designed and developed by Richard Nesnass
 */
-const https = require('https')
+const http = require('http')
+const sharp = require('sharp')
+const multer = require('multer')
 
 function shuffleArray(array) {
   const a = array.slice()
@@ -16,9 +18,32 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max))
 }
 
+function resizeImage(image) {
+  return sharp(image.buffer)
+    .toFormat('jpg')
+    .resize(400)
+    .toBuffer()
+}
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true)
+  } else {
+    cb(null, false)
+  }
+}
+
+const uploadHandler = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 1024 * 1024 * 1
+  },
+  fileFilter
+})
+
 function httpRequest(params, postData) {
   return new Promise(function(resolve, reject) {
-    const req = https.request(params, function(res) {
+    const req = http.request(params, function(res) {
       if (res.statusCode < 200 || res.statusCode >= 300) {
         return reject(new Error('statusCode=' + res.statusCode))
       }
@@ -48,5 +73,7 @@ function httpRequest(params, postData) {
 module.exports = {
   shuffleArray,
   getRandomInt,
-  httpRequest
+  httpRequest,
+  resizeImage,
+  uploadHandler
 }

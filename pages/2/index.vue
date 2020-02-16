@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="container mx-auto h-full flex flex-col justify-center main-background"
-  >
+  <div class="mx-auto h-full flex flex-col justify-center main-background">
     <p class="title pt-4 text-center text-white">kuratert</p>
     <p class="welcome p-4 text-center text-white">
       Velkommen!

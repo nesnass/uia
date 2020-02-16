@@ -48,7 +48,7 @@ Four pages:  Poster screen, Queue, item detail, browse art to select
 1. User views the following pages as designed by Idunn
    - Intro - static, but could also be a video
    - Playlist 'feed'
-   - Collection selection
+   - Collection / Exhibition selection
    - Item selection from collection
 
 2. User can select 1 or 2 collection artworks for display -> it is added to bottom of playlist. Selection order is ignored
@@ -56,7 +56,11 @@ Four pages:  Poster screen, Queue, item detail, browse art to select
 3. Playlist is shared between all visitors
 4. Playlist advance:
    Each item lasts 30 seconds
+   Timer countdown only shown on top image. No time on rest of images
    Timer counts down, at end next image moves to top
+5. Playlist item metadata:
+   Show separate screen or flip card over
+   Metadata comes from Idunn's Excel sheets
 
 
 # Hosting Options

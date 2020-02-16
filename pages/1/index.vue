@@ -45,10 +45,10 @@ export default {
   },
   methods: {
     prøve() {
-      this.$router.push('/p1/select')
+      this.$router.push('/1/select')
     },
     previousImage() {
-      this.$router.push('/p1/latest')
+      this.$router.push('/1/latest')
     }
   }
 }

@@ -1,4 +1,4 @@
-const items = require('./items.json')
+const items = require('./data/playlistItems.json')
 const playlist = []
 
 // Push a newly selected item, if found, to the bottom of the playlist

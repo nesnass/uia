@@ -1,8 +1,6 @@
 const fs = require('fs')
 const dirPath = process.cwd() + '/server/'
 
-let data = {}
-
 function readFile(filename) {
   return new Promise((resolve, reject) => {
     fs.readFile(`${dirPath}${filename}`, 'utf8', function readFileCallback(
@@ -36,22 +34,21 @@ function writeFile(filename, filedata) {
   })
 }
 
-function processData() {
+function processData(jsondata) {
   return new Promise((resolve, reject) => {
-    let id = 0
-    data.forEach((item) => {
-      item.id = id
-      id++
+    const formattedData = {}
+    jsondata.forEach((item) => {
+      const key = item['artifact.defaultMediaIdentifier']
+      formattedData[key] = item.Other_details[0]
     })
-    resolve()
+    resolve(formattedData)
   })
 }
 
-readFile('items.json')
+readFile('dimu_final2_key_imageID.json')
   .then((jsondata) => {
-    data = jsondata
-    processData().then(() => {
-      writeFile('items.json', data).catch((err) => console.error(err))
+    processData(jsondata).then((formattedData) => {
+      writeFile('file.json', formattedData).catch((err) => console.error(err))
     })
   })
   .catch((err) => console.error(err))

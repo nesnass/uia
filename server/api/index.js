@@ -1,8 +1,10 @@
 import express from 'express'
 const url = require('url')
 const vjPlaylist = require('../vjPlaylist.js')
-const upload = require('./upload.js')
-const matches = require('./matches.js')
+const utilities = require('../utilities.js')
+const upload = require('./GCPUpload.js')
+const matches = require('./GCPMatches.js')
+
 const router = express.Router()
 
 // Transform req & res to have the same API as express
@@ -22,8 +24,22 @@ router.use((req, res, next) => {
 })
 
 // Sign a file in preparation for upload
-router.get('/sign-s3', (req, res) => {
+router.get('/signedUpload', (req, res) => {
   upload.signUpload(req, res)
+})
+
+// Send a file directly via this server
+router.post(
+  '/upload',
+  utilities.uploadHandler.single('uploadedFile'),
+  (req, res, next) => {
+    upload.send(req, res, next)
+  }
+)
+
+// Attempt to match an uploaded image with one in the collection
+router.get('/match', (req, res) => {
+  upload.matchUpload(req, res)
 })
 
 // Get most recently uploaded image for a given userCode

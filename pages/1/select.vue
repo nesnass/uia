@@ -4,23 +4,28 @@
     <div v-show="!loading">
       <input
         id="file-input"
+        ref="file-input"
         @change="handleFileChange($event)"
+        accept="image/png, image/jpeg"
         type="file"
+        name="file-input"
         style="display: none"
       />
-      <BButton v-show="filesSelected === 0" class="mt-4">
-        <label for="file-input">Velg image</label>
-      </BButton>
+      <label
+        v-show="filesSelected === 0"
+        class="mt-4 w-24 bg-gray-200 p-8 cursor-pointer"
+        for="file-input"
+        >Velg image</label
+      >
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import BButton from '~/components/Button.vue'
 export default {
   components: {
-    BButton,
     PulseLoader
   },
   data() {
@@ -35,48 +40,61 @@ export default {
       if (this.filesSelected > 0) {
         this.loading = true
         const file = event.target.files[0]
-        this.getSignedRequest(file)
+        // this.getSignedRequest(file)
+        this.uploadFile(file)
       }
     },
-    getSignedRequest(file) {
-      const xhr = new XMLHttpRequest()
+    clickUpload() {
+      this.$refs['file-input'].click()
+    },
+    /* getSignedRequest(file) {
       const userCode = localStorage.getItem('userCode') || ''
-      xhr.open(
-        'GET',
-        `/api/sign-s3?file-name=${file.name}&file-type=${file.type}&user-code=${userCode}`
-      )
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText)
-            this.uploadFile(file, response)
-          } else {
-            alert('Could not get signed URL.')
-            this.loading = false
-          }
-        }
-      }
-      xhr.send()
-    },
-    uploadFile(file, response) {
-      const xhr = new XMLHttpRequest()
+      axios
+        .get(
+          `/api/signedUpload?file-name=${file.name}&file-type=${file.type}&user-code=${userCode}`
+        )
+        .then((response) => {
+          // const response = JSON.parse(xhr.responseText)
+          this.loading = false
+          this.uploadFile(file, response)
+        })
+        .catch((error) => {
+          alert(`Could not get signed URL: ${error}`)
+          this.loading = false
+        })
+    }, */
+    uploadFile(file) {
       const code = localStorage.getItem('userCode')
-      xhr.open('PUT', response.signedRequest)
-      xhr.onreadystatechange = () => {
-        this.loading = false
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            if (response.userCode && !code) {
-              localStorage.setItem('userCode', response.userCode)
-            }
-            this.$router.push('/p1/latest')
-          } else {
-            alert('Could not upload file.')
+      const formData = new FormData()
+      formData.append('uploadedFile', file)
+      axios
+        .post('/api/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+            // 'Content-Type': file.type
           }
-        }
-      }
-      xhr.send(file)
+        })
+        .then((response) => {
+          this.loading = false
+          if (response.data.userCode && !code) {
+            localStorage.setItem('userCode', response.data.userCode)
+          }
+          this.$router.push('/1/latest')
+        })
+        .catch((error) => {
+          console.log(error.response.data.error.message)
+        })
     }
+    /* beginMatching(file, code) {
+      axios
+        .get(
+          `/api/match?file-name=${file.name}&file-type=${file.type}&user-code=${code}`
+        )
+        .then(() => {
+          this.$router.push('/p1/latest')
+        })
+        .catch((error) => alert(`Could not upload file: ${error}`))
+    } */
   }
 }
 </script>
