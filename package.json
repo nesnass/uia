@@ -18,6 +18,9 @@
     "@google-cloud/storage": "^4.3.0",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/dotenv": "^1.4.1",
+    "@nuxtjs/eslint-config": "^1.0.1",
+    "@nuxtjs/eslint-module": "^1.0.0",
+    "@nuxtjs/tailwindcss": "^1.0.0",
     "aws-sdk": "^2.593.0",
     "body-parser": "^1.19.0",
     "cookie-universal-nuxt": "^2.1.0",
@@ -35,9 +38,6 @@
     "vue-spinner": "^1.0.3"
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config": "^1.0.1",
-    "@nuxtjs/eslint-module": "^1.0.0",
-    "@nuxtjs/tailwindcss": "^1.0.0",
     "@vue/test-utils": "^1.0.0-beta.27",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.1.0",
