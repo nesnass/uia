@@ -68,7 +68,7 @@ export default {
       const formData = new FormData()
       formData.append('uploadedFile', file)
       axios
-        .post('/api/upload', formData, {
+        .post(`/api/upload?user-code=${code}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
             // 'Content-Type': file.type

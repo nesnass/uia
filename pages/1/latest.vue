@@ -141,5 +141,6 @@ export default {
   height: 0;
   padding: 0; /* remove any pre-existing padding, just in case */
   padding-bottom: 100%; /* for a 4:3 aspect ratio */
+  width: 100vw;
 }
 </style>

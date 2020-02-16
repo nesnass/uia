@@ -29,13 +29,15 @@ router.get('/signedUpload', (req, res) => {
 })
 
 // Send a file directly via this server
-router.post(
-  '/upload',
-  utilities.uploadHandler.single('uploadedFile'),
-  (req, res, next) => {
+router.post('/upload', (req, res, next) => {
+  utilities.uploadHandler.single('uploadedFile')(req, res, (err) => {
+    if (err) {
+      console.log(err)
+      return res.status(500).send(`File upload error: ${err.message}`)
+    }
     upload.send(req, res, next)
-  }
-)
+  })
+})
 
 // Attempt to match an uploaded image with one in the collection
 router.get('/match', (req, res) => {

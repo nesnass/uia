@@ -22,6 +22,7 @@ const storage = new Storage(config)
 const database = new Firestore(config)
 
 // Test that storage connection works
+/*
 async function testStorageConnection() {
   try {
     const results = await storage.getBuckets()
@@ -45,6 +46,7 @@ function testDBConnection() {
     })
 }
 testDBConnection()
+ */
 
 // Update a user in GCP Database
 function updateUserInDB(userData) {
@@ -143,7 +145,7 @@ function send(req, res, next) {
   utilities.resizeImage(req.file).then((resizedFile) => {
     const fileType = 'image/jpeg' // mime.lookup(req.file.originalname)
     const fileName = `${uuidv4()}.${mime.extensions[fileType][1]}`
-    const userCode = req.searchParams.get('user-code') || uuidv4()
+    const userCode = req.query['user-code'] || uuidv4()
 
     saveImageToBucket({ fileName, fileType, file: resizedFile })
       .then((publicUrl) => {
