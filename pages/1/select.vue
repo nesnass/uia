@@ -64,7 +64,7 @@ export default {
         })
     }, */
     uploadFile(file) {
-      const code = window.localStorage.getItem('userCode')
+      const code = window.localStorage.getItem('userCode') || ''
       const formData = new FormData()
       formData.append('uploadedFile', file)
       axios

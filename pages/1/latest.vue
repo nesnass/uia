@@ -51,6 +51,7 @@
           >prov igjen</BButton
         >
       </div>
+      <p>{{ userCode }}</p>
     </div>
   </div>
 </template>
@@ -69,6 +70,7 @@ export default {
       filesSelected: 0,
       userImage: undefined,
       museumImage: undefined,
+      userCode: '',
       loading: true
     }
   },
@@ -86,8 +88,8 @@ export default {
   },
   mounted() {
     this.loading = true
-    const code = window.localStorage.getItem('userCode')
-    axios.get(`/api/latest?user-code=${code}`).then((data) => {
+    this.userCode = window.localStorage.getItem('userCode')
+    axios.get(`/api/latest?user-code=${this.userCode}`).then((data) => {
       this.userImage = data.data.userImage
       this.museumImage = data.data.museumImage
       this.loading = false

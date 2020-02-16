@@ -163,7 +163,12 @@ function send(req, res, next) {
               matches,
               labels,
               bestMatch
-            }).then((userRecord) => res.send({ userRecord, userCode }))
+            }).then((userRecord) =>
+              res.send({
+                userRecord,
+                userCode
+              })
+            )
           })
           .catch((err) => {
             console.log('Error setting document in DB', err)

@@ -11,7 +11,8 @@ function ImageRecord(spec) {
     publicUrl: spec.publicUrl,
     matches: spec.matches,
     labels: spec.labels,
-    bestMatch: spec.bestMatch
+    bestMatch: spec.bestMatch,
+    created: new Date()
   }
 }
 
