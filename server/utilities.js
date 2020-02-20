@@ -21,6 +21,7 @@ function getRandomInt(max) {
 function resizeImage(image) {
   return sharp(image.buffer)
     .toFormat('jpg')
+    .rotate()
     .resize(400)
     .toBuffer()
 }
