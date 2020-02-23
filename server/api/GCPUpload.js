@@ -1,6 +1,8 @@
+const fs = require('fs')
 const mime = require('mime-types')
 const uuidv4 = require('uuid/v4')
 const FormData = require('form-data')
+const dirPath = process.cwd() + '/server'
 const { Storage } = require('@google-cloud/storage')
 const Firestore = require('@google-cloud/firestore')
 const utilities = require('../utilities')
@@ -9,6 +11,10 @@ const UPLOAD_BUCKET = process.env.GCP_UPLOAD_BUCKET
 const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID
 const GCP_KEY_FILENAME = process.env.GCP_KEY_FILENAME
 const SIMILARITY_API = process.env.SIMILARITY_API
+
+const dimuSkmu = JSON.parse(
+  fs.readFileSync(`${dirPath}/data/dimu_skmu.json`, 'utf8')
+)
 
 const config =
   process.env.NODE_ENV !== 'production'
@@ -53,6 +59,7 @@ function updateUserInDB(userData) {
   const {
     userCode,
     fileName,
+    originalUrl,
     fileType,
     publicUrl,
     matches,
@@ -72,13 +79,15 @@ function updateUserInDB(userData) {
         }
         const imageRecord = ImageRecord({
           fileName,
+          originalUrl,
           fileType,
           publicUrl,
           matches,
           labels,
           bestMatch
         })
-        userRecord.imageRecords.push(imageRecord)
+        userRecord.imageRecords[imageRecord.imageCode] = imageRecord
+        userRecord.latest = imageRecord.imageCode
         const updatedDoc = database.collection('userMatches').doc(userCode)
         updatedDoc.set(userRecord).then(() => resolve(userRecord))
       })
@@ -142,41 +151,75 @@ function saveImageToBucket(userData) {
 }
 
 function send(req, res, next) {
-  utilities.resizeImage(req.file).then((resizedFile) => {
-    const fileType = 'image/jpeg' // mime.lookup(req.file.originalname)
-    const fileName = `${uuidv4()}.${mime.extensions[fileType][1]}`
-    const userCode = req.query['user-code'] || uuidv4()
+  utilities
+    .resizeImage(req.file)
+    .then((resizedFile) => {
+      const fileType = mime.lookup(req.file.originalname)
+      const mimeName = mime.extensions[fileType][1]
+      let fileName = uuidv4()
+      const originalFilename = fileName + '_original.' + mimeName
+      fileName = fileName + '.' + mimeName
+      const userCode = req.query['user-code'] || uuidv4()
 
-    saveImageToBucket({ fileName, fileType, file: resizedFile })
-      .then((publicUrl) => {
-        discoverSimilarImages(resizedFile)
-          .then((response) => {
-            const r = JSON.parse(response)
-            const matches = r.length > 0 ? r[0] : []
-            const labels = r.length > 1 ? r[1] : []
-            const bestMatch = matches.length > 1 ? matches[1] : undefined
-            updateUserInDB({
-              userCode,
-              fileName,
-              fileType,
-              publicUrl,
-              matches,
-              labels,
-              bestMatch
-            }).then((userRecord) =>
-              res.send({
-                userRecord,
-                userCode
-              })
-            )
-          })
-          .catch((err) => {
-            console.log('Error setting document in DB', err)
-            return res.send(500, { error: err })
-          })
+      function filterForFaces(faces, matches) {
+        return matches.find(
+          (m) => dimuSkmu[m.filename].number_of_detected_faces <= faces
+        )
+      }
+
+      if (!['image/jpg', 'image/jpeg', 'image/png'].includes(fileType)) {
+        return res.status(415).send({ error: new Error('Unsupported Media') })
+      }
+
+      saveImageToBucket({
+        fileName: originalFilename,
+        fileType,
+        file: req.file.buffer
       })
-      .catch((err) => next(err))
-  })
+        .then((originalUrl) => {
+          saveImageToBucket({ fileName, fileType, file: resizedFile })
+            .then((publicUrl) => {
+              discoverSimilarImages(resizedFile)
+                .then((response) => {
+                  const r = JSON.parse(response)
+                  const matches = r.length > 0 ? r[0] : []
+                  const labels = r.length > 1 ? r[1] : []
+                  // First item is the user image, remove it
+                  matches.shift()
+                  // adjust to face count greater than one if necessary
+                  const faces = labels.number_of_faces
+                    ? labels.number_of_faces[0]
+                    : 0
+                  const bestMatch = filterForFaces(faces, matches)
+                  updateUserInDB({
+                    userCode,
+                    fileName,
+                    originalUrl,
+                    fileType,
+                    publicUrl,
+                    matches,
+                    labels,
+                    bestMatch
+                  }).then((userRecord) =>
+                    res.status(200).send({
+                      userRecord,
+                      userCode
+                    })
+                  )
+                })
+                .catch((err) => {
+                  console.log('Error setting document in DB', err)
+                  return res.status(500).send({ error: err })
+                })
+            })
+            .catch((err) => next(err))
+        })
+        .catch((err) => next(err))
+    })
+    .catch((err) => {
+      console.log(err)
+      next()
+    })
 }
 
 module.exports = {

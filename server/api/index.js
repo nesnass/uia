@@ -23,11 +23,6 @@ router.use((req, res, next) => {
   next()
 })
 
-// Sign a file in preparation for upload
-router.get('/signedUpload', (req, res) => {
-  upload.signUpload(req, res)
-})
-
 // Send a file directly via this server
 router.post('/upload', (req, res, next) => {
   utilities.uploadHandler.single('uploadedFile')(req, res, (err) => {
@@ -39,15 +34,22 @@ router.post('/upload', (req, res, next) => {
   })
 })
 
-// Attempt to match an uploaded image with one in the collection
-router.get('/match', (req, res) => {
-  upload.matchUpload(req, res)
+// Get most recently uploaded image for a given userCode
+router.get('/image', (req, res) => {
+  matches.getImage(req, res)
 })
 
-// Get most recently uploaded image for a given userCode
-router.get('/latest', (req, res) => {
-  matches.getLatestImage(req, res)
+// Sign a file in preparation for upload
+router.get('/share', (req, res) => {
+  matches.share(req, res)
 })
+
+// Sign a file in preparation for upload
+router.get('/allshared', (req, res) => {
+  matches.allSharedItems(req, res)
+})
+
+// --------------   P2 -----------------
 
 // Playlist routes
 router.get('/playlist', (req, res) => {

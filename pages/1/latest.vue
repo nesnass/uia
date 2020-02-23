@@ -1,68 +1,83 @@
 <template>
-  <div class="container flex flex-col justify-center">
-    <PulseLoader :loading="loading"></PulseLoader>
+  <div class="max-w-xl m-auto container flex flex-col justify-center relative">
+    <p class="text-3xl font-bold mb-4 text-center">meg + kunst</p>
     <div class="flex flex-col">
-      <div
-        v-if="!loading && userImage"
-        :style="userImageStyle"
-        class="relative bg-no-repeat bg-contain bg-center myBackground"
-      >
-        <!--img
+      <div v-if="userImage" class="relative">
+        <img
           id="preview"
-          v-if="!loading && userImage"
           :src="userImage.publicUrl"
-        /-->
-        <div
+          class="w-full rounded-ms"
+        />
+        <!--div
           class="absolute flex items-center inset-x-0 bottom-0 h-8 p-2"
           style="background: rgba(0, 0, 0, 0.45)"
         >
           <p class="text-white">My image caption</p>
-        </div>
+        </div-->
       </div>
       <!--div v-if="museumImage" class="relative flex justify-center m-4"-->
-      <div
-        v-if="museumImage"
-        :style="museumImageStyle"
-        class="relative bg-no-repeat bg-contain bg-center myBackground"
-      >
-        <!--img
+      <div v-if="museumImage" class="relative pt-2">
+        <img
           id="museumImage"
-          v-if="!loading"
           :src="museumImage.url"
-          class="w-full"
-        /-->
-        <div
+          class="w-full rounded-ms"
+        />
+        <!--div
           class="absolute flex items-center inset-x-0 bottom-0 h-8 p-2"
           \style="background: rgba(0, 0, 0, 0.45)"
         >
           <p class="text-white">Museum image caption</p>
-        </div>
+        </div-->
       </div>
-      <p v-if="museumImage" class="text-lg">
-        {{ museumImage.metadata['artifact.ingress.title'] }}
-      </p>
-      <p v-if="museumImage" class="text-lg">
+      <p v-if="museumImage" class="text-lg text-center pt-4 font-bold">
+        <span class="italic">{{
+          museumImage.metadata['artifact.ingress.title']
+        }}</span>
+        by
         {{
-          `${museumImage.metadata['artifact.type']}. ${museumImage.metadata['artifact.ingress.producer']}`
+          museumImage.metadata['artifact.ingress.producer'] +
+            ' (' +
+            museumImage.metadata['artifact.ingress.production.toYear'] +
+            ').'
         }}
       </p>
-      <div class="flex flex-col items-center mb-4">
-        <BButton @click="prøveIgjen()" class="mt-4 w-36 bg-gray-200"
-          >prov igjen</BButton
+      <div
+        v-if="museumImage"
+        class="flex flex-row items-center justify-center mx-4 mt-4"
+      >
+        <img src="@/assets/icons/facebook.png" class="mx-2 w-8 h-8" />
+        <img
+          @click="share()"
+          :class="{ disabled: userImage.shared }"
+          src="@/assets/icons/share.png"
+          class="mx-2 w-24"
+        />
+        <img src="@/assets/icons/instagram.png" class="mx-2 w-8 h-8" />
+      </div>
+      <div class="flex flex-col items-center my-8">
+        <BButton
+          @click="prøveIgjen()"
+          class="mt-4 w-36 bg-white border border-uia-bg text-uia-bg"
+          >prøv igjen?</BButton
         >
       </div>
-      <p>{{ userCode }}</p>
+      <!--p class="text-xs">{{ userCode }}</p-->
+    </div>
+
+    <div
+      v-if="thankyou"
+      class="fixed inset-x-0 text-center mt-48 top-0 h-20 text-8xl italic text-uia-bg font-bold"
+    >
+      takk!
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import BButton from '~/components/Button.vue'
 export default {
   components: {
-    PulseLoader,
     BButton
   },
   data() {
@@ -71,7 +86,8 @@ export default {
       userImage: undefined,
       museumImage: undefined,
       userCode: '',
-      loading: true
+      loading: true,
+      thankyou: false
     }
   },
   computed: {
@@ -89,7 +105,7 @@ export default {
   mounted() {
     this.loading = true
     this.userCode = window.localStorage.getItem('userCode')
-    axios.get(`/api/latest?user-code=${this.userCode}`).then((data) => {
+    axios.get(`/api/image?user-code=${this.userCode}`).then((data) => {
       this.userImage = data.data.userImage
       this.museumImage = data.data.museumImage
       this.loading = false
@@ -97,19 +113,48 @@ export default {
   },
   methods: {
     prøveIgjen() {
-      this.$router.push('/1/select')
+      this.$router.push('/1')
+    },
+    showThankyou() {
+      this.thankyou = true
+      window.setTimeout(() => {
+        this.thankyou = false
+      }, 2000)
+    },
+    share() {
+      if (this.userImage.shared) {
+        return
+      }
+      const code = window.localStorage.getItem('userCode')
+      const imageCode = this.userImage.imageCode
+      axios
+        .get(`/api/share?user-code=${code}&image-code=${imageCode}`)
+        .then((response) => {
+          this.userImage.shared = true
+          this.showThankyou()
+        })
+        .catch((error) => {
+          console.log(error.response.data.error.message)
+        })
     }
   }
 }
 </script>
 
 <style>
+.disabled {
+  -webkit-filter: grayscale();
+  -moz-filter: grayscale();
+  -ms-filter: grayscale();
+  -o-filter: grayscale();
+  filter: grayscale();
+}
 /* Sample `apply` at-rules with Tailwind CSS
 .container {
   @apply min-h-screen flex justify-center items-center text-center mx-auto;
 }
 */
-.container {
+/* .container {
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
@@ -141,8 +186,8 @@ export default {
 }
 .myBackground {
   height: 0;
-  padding: 0; /* remove any pre-existing padding, just in case */
-  padding-bottom: 100%; /* for a 4:3 aspect ratio */
+  padding: 0;
+  padding-bottom: 100%;
   width: 100vw;
-}
+} */
 </style>
