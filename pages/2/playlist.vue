@@ -1,8 +1,10 @@
 <template>
   <div class="container flex flex-col justify-center">
     <PulseLoader :loading="loading"></PulseLoader>
+    <div v-for="p in playlist">
+      <VJItem :artwork="p"></VJItem>
+    </div>
     <div class="flex flex-col">
-      <VJItem></VJItem>
       <BButton
         @click="select()"
         :applyClasses="'bg-uia-pink text-white'"
@@ -29,18 +31,16 @@ export default {
   data() {
     return {
       filesSelected: 0,
-      imagePreview: undefined,
-      museumImage: undefined,
+      playlist: [],
       loading: true
     }
   },
   mounted() {
     this.loading = true
     this.socket = io()
-    const code = localStorage.getItem('userCode')
-    axios.get(`/api/playlist?user-code=${code}`).then((data) => {
-      this.imagePreview = data.data.signedRequest
-      this.museumImage = data.data.museumImage
+    // const code = localStorage.getItem('userCode')
+    axios.get('/api/playlist').then((data) => {
+      this.playlist = data.playlist
       this.loading = false
     })
     this.socket.emit('userStart', {

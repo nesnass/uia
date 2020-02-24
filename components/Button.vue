@@ -36,7 +36,8 @@ export default {
   computed: {
     customClasses() {
       const classes = {
-        'text-gray-400': this.disabled
+        'text-white': this.disabled,
+        'bg-gray-400': this.disabled
       }
       const extraClasses = this.applyClasses.split(' ')
       if (extraClasses) {

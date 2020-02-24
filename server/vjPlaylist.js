@@ -2,7 +2,7 @@ const items = require('./data/playlistItems.json')
 const playlist = []
 
 // Push a newly selected item, if found, to the bottom of the playlist
-function addItem(itemID, userID) {
+function addItems(itemID, userID) {
   const itemToAdd = items.find((i) => i.id === itemID)
   itemToAdd.userID = userID
   if (itemToAdd) {
@@ -41,7 +41,7 @@ function start(io) {
 }
 
 module.exports = {
-  addItem,
+  addItems,
   nextItem,
   currentItem,
   getPlaylist,
