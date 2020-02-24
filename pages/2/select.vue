@@ -6,8 +6,19 @@
         v-for="item in items"
         :key="item.id"
         :artwork="item"
+        :disabled="disableSelection"
+        @change="dataChanged"
         class="w-1/3 bg-gray-400 h-12"
       ></VJItem>
+    </div>
+    <div class="fixed margin-auto mt-8">
+      <BButton
+        @click="select()"
+        :applyClasses="'bg-uia-pink text-white'"
+        :disabled="selectedItemCount == 0"
+        class="mt-4 w-48"
+        >+ legg til verk i playlist
+      </BButton>
     </div>
   </div>
 </template>
@@ -17,20 +28,28 @@ import axios from 'axios'
 // import io from 'socket.io-client'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import VJItem from '~/components/VJItem.vue'
-// import BButton from '~/components/Button.vue'
+import BButton from '~/components/Button.vue'
 
 export default {
   components: {
     PulseLoader,
-    VJItem
-    // BButton
+    VJItem,
+    BButton
   },
   data() {
     return {
       filesSelected: 0,
       items: [],
-      loading: true,
+      loading: false,
       userCode: undefined
+    }
+  },
+  computed: {
+    disableSelection() {
+      return this.selectedItemCount > 1
+    },
+    selectedItemCount() {
+      return this.items.reduce((acc, curr) => (curr.checked ? acc + 1 : acc), 0)
     }
   },
   mounted() {
@@ -38,7 +57,10 @@ export default {
     // this.socket = io()
     this.userCode = localStorage.getItem('userCode')
     axios.get('/api/playlist/allitems').then((response) => {
-      this.items = response.data.items
+      this.items = response.data.items.map((i) => {
+        i.checked = false
+        return i
+      })
       this.loading = false
     })
     /* this.socket.emit('userStart', {
@@ -47,8 +69,23 @@ export default {
     }) */
   },
   methods: {
-    prøveIgjen() {
-      this.$router.push('/p1/select')
+    dataChanged(data) {
+      console.log(data.checked + ' ' + data.id)
+    },
+    addItem(item) {
+      this.loading = true
+      const selectedIds = this.items.reduce(
+        (acc, curr) => (curr.checked ? acc + ',' + curr.id : acc),
+        ''
+      )
+      axios
+        .put(
+          `/api/playlist/additem?itemIds=${selectedIds}&userId=${this.userCode}`
+        )
+        .then(() => {
+          this.loading = false
+          this.$router.push('/2/playlist')
+        })
     }
   }
 }
