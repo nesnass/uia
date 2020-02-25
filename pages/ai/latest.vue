@@ -31,15 +31,13 @@
       </div>
       <p v-if="museumImage" class="text-lg text-center pt-4 font-bold">
         <span class="italic">{{
-          museumImage.metadata['artifact.ingress.title']
-        }}</span>
-        by
-        {{
-          museumImage.metadata['artifact.ingress.producer'] +
+          museumImage.metadata['artifact.ingress.title'] +
             ' (' +
             museumImage.metadata['artifact.ingress.production.toYear'] +
             ').'
-        }}
+        }}</span>
+        av
+        {{ museumImage.metadata['artifact.ingress.producer'] }}
       </p>
       <div
         v-if="museumImage"
@@ -143,11 +141,12 @@ export default {
 
 <style>
 .disabled {
-  -webkit-filter: grayscale();
+  /*   -webkit-filter: grayscale();
   -moz-filter: grayscale();
   -ms-filter: grayscale();
   -o-filter: grayscale();
-  filter: grayscale();
+  filter: grayscale(); */
+  opacity: 50%;
 }
 /* Sample `apply` at-rules with Tailwind CSS
 .container {

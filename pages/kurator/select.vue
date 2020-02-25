@@ -1,21 +1,22 @@
 <template>
   <div class="container flex flex-col justify-center">
     <PulseLoader :loading="loading"></PulseLoader>
-    <div class="flex flex-wrap">
+    <div v-if="!loading" class="flex flex-wrap w-full">
       <VJItem
-        v-for="item in items"
+        v-for="item in exhibitionList"
         :key="item.id"
         :artwork="item"
-        :disabled="disableSelection"
+        :disabled="selectedItems.length > 1"
         @change="dataChanged"
-        class="w-1/3 bg-gray-400 h-12"
+        arttype="artwork"
+        class="w-1/3 bg-gray-400 h-64"
       ></VJItem>
     </div>
     <div class="fixed margin-auto mt-8">
       <BButton
-        @click="select()"
+        @click="addItems()"
         :applyClasses="'bg-uia-pink text-white'"
-        :disabled="selectedItemCount == 0"
+        :disabled="selectedItems.length == 0"
         class="mt-4 w-48"
         >+ legg til verk i playlist
       </BButton>
@@ -30,6 +31,10 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import VJItem from '~/components/VJItem.vue'
 import BButton from '~/components/Button.vue'
 
+import exhibitions1 from '~/pages/kurator/exhibition1.json'
+import exhibitions2 from '~/pages/kurator/exhibition2.json'
+import exhibitions3 from '~/pages/kurator/exhibition3.json'
+
 export default {
   components: {
     PulseLoader,
@@ -38,53 +43,50 @@ export default {
   },
   data() {
     return {
+      exhibitions1,
+      exhibitions2,
+      exhibitions3,
+      exhibitionList: [],
       filesSelected: 0,
-      items: [],
       loading: false,
-      userCode: undefined
+      userCode: undefined,
+      exhibitionId: '',
+      selectedItems: []
     }
   },
-  computed: {
-    disableSelection() {
-      return this.selectedItemCount > 1
-    },
-    selectedItemCount() {
-      return this.items.reduce((acc, curr) => (curr.checked ? acc + 1 : acc), 0)
-    }
-  },
+  computed: {},
   mounted() {
-    this.loading = true
+    this.exhibitionId = this.$route.query.id
     // this.socket = io()
     this.userCode = localStorage.getItem('userCode')
-    axios.get('/api/playlist/allitems').then((response) => {
-      this.items = response.data.items.map((i) => {
+    if (this['exhibitions' + this.exhibitionId]) {
+      this['exhibitions' + this.exhibitionId].forEach((i) => {
         i.checked = false
-        return i
+        this.exhibitionList.push(i)
       })
-      this.loading = false
-    })
-    /* this.socket.emit('userStart', {
-      userCode: this.userCode,
-      message: 'start'
-    }) */
+    }
   },
   methods: {
     dataChanged(data) {
-      console.log(data.checked + ' ' + data.id)
+      const item = this.exhibitionList.find((el) => el.id === data.id)
+      item.checked = data.checked
+      const i = this.selectedItems.indexOf(data.id)
+      if (this.selectedItems.length < 2) {
+        this.selectedItems.push(data.id)
+      } else if (i > -1) {
+        this.selectedItems.splice(i, -1)
+      }
     },
-    addItem(item) {
+    addItems() {
       this.loading = true
-      const selectedIds = this.items.reduce(
-        (acc, curr) => (curr.checked ? acc + ',' + curr.id : acc),
-        ''
-      )
+      const selectedIds = this.selectedItems.toString()
       axios
         .put(
-          `/api/playlist/additem?itemIds=${selectedIds}&userId=${this.userCode}`
+          `/api/playlist/additems?itemIds=${selectedIds}&exId=${this.exhibitionId}&userId=${this.userCode}`
         )
         .then(() => {
           this.loading = false
-          this.$router.push('/2/playlist')
+          this.$router.push('/kurator/playlist')
         })
     }
   }

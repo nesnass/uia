@@ -8,7 +8,7 @@
         @click="kuratert()"
         :applyClasses="'bg-gray-200'"
         class="mt-4 w-24"
-        >kuratert</BButton
+        >kurator</BButton
       >
     </div>
     <p class="text-sm absolute bottom-0">
@@ -39,10 +39,10 @@ export default {
   },
   methods: {
     kunst() {
-      this.$router.push('/1')
+      this.$router.push('/ai')
     },
     kuratert() {
-      this.$router.push('/2')
+      this.$router.push('/kurator')
     }
   }
 }

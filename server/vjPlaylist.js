@@ -1,13 +1,35 @@
-const items = require('./data/playlistItems.json')
-const playlist = []
+const PLAYLIST_INTERVAL = process.env.PLAYLIST_INTERVAL
+let playlist = []
+
+function getTime() {
+  const l = playlist.length
+  const d = new Date()
+  d.setSeconds(d.getSeconds() + 30 * l)
+  return d
+}
+
+function checkList() {
+  const nowPlusPlaytime = new Date()
+  nowPlusPlaytime.setSeconds(nowPlusPlaytime.getSeconds() + PLAYLIST_INTERVAL)
+  playlist = playlist.filter((i) => i.start < nowPlusPlaytime)
+  if (playlist.length > 0) {
+    setTimeout(checkList, 2000)
+  }
+}
 
 // Push a newly selected item, if found, to the bottom of the playlist
-function addItems(itemID, userID) {
-  const itemToAdd = items.find((i) => i.id === itemID)
-  itemToAdd.userID = userID
-  if (itemToAdd) {
-    playlist.push(itemToAdd)
-  }
+function addItems(itemIDs, exID, userID) {
+  const items = itemIDs.split(',')
+  items.forEach((i) => {
+    const item = {
+      itemID: i,
+      exID,
+      userID,
+      start: getTime()
+    }
+    playlist.push(item)
+  })
+  setTimeout(checkList, 2000)
 }
 
 // Moves playlist to the next item
@@ -22,10 +44,6 @@ function currentItem() {
 
 function getPlaylist() {
   return playlist
-}
-
-function getAllItems() {
-  return items
 }
 
 function start(io) {
@@ -45,6 +63,5 @@ module.exports = {
   nextItem,
   currentItem,
   getPlaylist,
-  getAllItems,
   start
 }

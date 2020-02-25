@@ -79,7 +79,7 @@ export default {
           if (response.data.userCode && !code) {
             window.localStorage.setItem('userCode', response.data.userCode)
           }
-          this.$router.push('/1/latest')
+          this.$router.push('/ai/latest')
         })
         .catch((error) => {
           console.log(error.response.data.error.message)

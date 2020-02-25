@@ -1,0 +1,43 @@
+[
+  {
+    "id": "1",
+    "filename": "French-loafs-2017-1920x1281.jpg",
+    "artifact.ingress.producer": "Iiu Susiraja",
+    "producer.birth.year": "1975",
+    "artifact.ingress.title": "French loafs",
+    "artifact.type": "Fotografi",
+    "artifact.ingress.production.yoYear": "2017",
+    "exhibition.title": "Iiu Susiraja. Dry Joy",
+    "exhibition.dates": "13. februar 2020 - 07. juni 2020",
+    "exhibition.abstract": "Iiu Susirajas provokative selv-portretter bryter alle regler. Hun leker med mat, bruker hverdagsobjekter p� merkelige m�ter og stiller sp�rsm�l ved restriktive skj�nnhetsidealer. I hennes billedverden skildres kvinnelighet og menneskelige forhold med varme, humor og brutal �rlighet.",
+    "exhibition.illustration": "French-loafs-2017-1920x1281.jpg",
+    "path": "exhibition3"
+  },
+  {
+    "id": "2",
+    "filename": "LovelyWife2018.jpg",
+    "artifact.ingress.producer": "Iiu Susiraja",
+    "producer.birth.year": "1975",
+    "artifact.ingress.title": "Lovely wife",
+    "artifact.type": "Fotografi",
+    "artifact.ingress.production.yoYear": "2018",
+    "exhibition.title": "Iiu Susiraja. Dry Joy",
+    "exhibition.dates": "13. februar 2020 - 07. juni 2020",
+    "exhibition.abstract": "Iiu Susirajas provokative selv-portretter bryter alle regler. Hun leker med mat, bruker hverdagsobjekter p� merkelige m�ter og stiller sp�rsm�l ved restriktive skj�nnhetsidealer. I hennes billedverden skildres kvinnelighet og menneskelige forhold med varme, humor og brutal �rlighet.",
+    "exhibition.illustration": "French-loafs-2017-1920x1281.jpg",
+    "path": "exhibition3"
+  },
+  {
+    "id": "3",
+    "filename": "Timetoplay2018.jpg",
+    "artifact.ingress.producer": "Iiu Susiraja",
+    "producer.birth.year": "1975",
+    "artifact.ingress.title": "Time to play",
+    "artifact.type": "Fotografi",
+    "artifact.ingress.production.yoYear": "2018",
+    "exhibition.title": "Iiu Susiraja. Dry Joy",
+    "exhibition.dates": "13. februar 2020 - 07. juni 2020",
+    "exhibition.abstract": "Iiu Susirajas provokative selv-portretter bryter alle regler. Hun leker med mat, bruker hverdagsobjekter p� merkelige m�ter og stiller sp�rsm�l ved restriktive skj�nnhetsidealer. I hennes billedverden skildres kvinnelighet og menneskelige forhold med varme, humor og brutal �rlighet.",
+    "exhibition.illustration": "French-loafs-2017-1920x1281.jpg"
+  }
+]

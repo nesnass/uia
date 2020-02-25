@@ -22,6 +22,10 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import VJItem from '~/components/VJItem.vue'
 import BButton from '~/components/Button.vue'
 
+import exhibitions1 from '~/pages/kurator/exhibition1.json'
+import exhibitions2 from '~/pages/kurator/exhibition2.json'
+import exhibitions3 from '~/pages/kurator/exhibition3.json'
+
 export default {
   components: {
     PulseLoader,
@@ -30,6 +34,9 @@ export default {
   },
   data() {
     return {
+      exhibitions1,
+      exhibitions2,
+      exhibitions3,
       filesSelected: 0,
       playlist: [],
       loading: true
@@ -50,7 +57,7 @@ export default {
   },
   methods: {
     select() {
-      this.$router.push('/2/select')
+      this.$router.push('/kurator/exhibitions')
     }
   }
 }

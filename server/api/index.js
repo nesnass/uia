@@ -66,8 +66,8 @@ router.get('/playlist/allitems', (req, res) => {
     .status(200)
     .end()
 })
-router.put('/playlist/additem', (req, res) => {
-  vjPlaylist.addItems(req.query.itemIds, req.query.userId)
+router.put('/playlist/additems', (req, res) => {
+  vjPlaylist.addItems(req.query.itemIds, req.query.exId, req.query.userId)
   res.status(200).send()
 })
 // Export the server middleware

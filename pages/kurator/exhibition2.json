@@ -1,0 +1,43 @@
+[
+  {
+    "id": "1",
+    "filename": "IMG_5152.jpg",
+    "artifact.ingress.producer": "Arne Malmedal",
+    "producer.birth.year": "1947",
+    "artifact.ingress.title": "Uten tittel",
+    "artifact.type": "Olje p� lerret",
+    "artifact.ingress.production.yoYear": "1979",
+    "exhibition.title": "Before the Horizon. AKO Curatorial Award",
+    "exhibition.dates": "7. desember 2019 - 1. mars 2020",
+    "exhibition.abstract": "Har du noen gang tenkt p� horisonten som noe mer enn et naturelement? I denne utstillingen viser vinneren av AKO Curatorial Award, Laura House, hvordan horisonten b�de utvider og begrenser v�re perspektiver p� det � v�re menneske.",
+    "exhibition.illustration": "056_Deux-personnages-au-bord-de-la-mer_Elina-Brotherus_2005-1920x1515",
+    "path": "exhibition2"
+  },
+  {
+    "id": "2",
+    "filename": "IMG_5148.jpg",
+    "artifact.ingress.producer": "Marianne Lund",
+    "producer.birth.year": "1960",
+    "artifact.ingress.title": "399 sirkler",
+    "artifact.type": "Tegning",
+    "artifact.ingress.production.yoYear": "2005",
+    "exhibition.title": "Before the Horizon. AKO Curatorial Award",
+    "exhibition.dates": "7. desember 2019 - 1. mars 2020",
+    "exhibition.abstract": "Har du noen gang tenkt p� horisonten som noe mer enn et naturelement? I denne utstillingen viser vinneren av AKO Curatorial Award, Laura House, hvordan horisonten b�de utvider og begrenser v�re perspektiver p� det � v�re menneske.",
+    "exhibition.illustration": "056_Deux-personnages-au-bord-de-la-mer_Elina-Brotherus_2005-1920x1515",
+    "path": "exhibition2"
+  },
+  {
+    "id": "3",
+    "filename": "IMG_5139.jpg",
+    "artifact.ingress.producer": "Aase Texmon Rygh ",
+    "producer.birth.year": "1925",
+    "artifact.ingress.title": "M�bius Rund",
+    "artifact.type": "Bronse skulptur",
+    "artifact.ingress.production.yoYear": "1989",
+    "exhibition.title": "Before the Horizon. AKO Curatorial Award",
+    "exhibition.dates": "7. desember 2019 - 1. mars 2020",
+    "exhibition.abstract": "Har du noen gang tenkt p� horisonten som noe mer enn et naturelement? I denne utstillingen viser vinneren av AKO Curatorial Award, Laura House, hvordan horisonten b�de utvider og begrenser v�re perspektiver p� det � v�re menneske.",
+    "exhibition.illustration": "056_Deux-personnages-au-bord-de-la-mer_Elina-Brotherus_2005-1920x1515"
+  }
+]

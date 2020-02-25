@@ -1,7 +1,7 @@
 <template>
   <div
     :style="`background-image: url(${selectedBackground})`"
-    class="max-w-xl m-auto font-sans mx-auto h-screen flex flex-col justify-center bg-center bg-cover"
+    class="md:max-w-xl m-auto font-sans mx-auto h-screen flex flex-col justify-center bg-center bg-cover"
   >
     <p class="text-5xl font-bold mb-24 text-center text-white">meg + kunst</p>
     <p class="text-2xl mb-16 px-10 text-center text-white">
@@ -76,10 +76,10 @@ export default {
   },
   methods: {
     prøve() {
-      this.$router.push('/1/select')
+      this.$router.push('/ai/select')
     },
     previousImage() {
-      this.$router.push('/1/latest')
+      this.$router.push('/ai/latest')
     },
     handleFileChange(event) {
       this.filesSelected = event.target.files.length
@@ -109,7 +109,7 @@ export default {
           if (response.data.userCode && !code) {
             window.localStorage.setItem('userCode', response.data.userCode)
           }
-          this.$router.push('/1/latest')
+          this.$router.push('/ai/latest')
         })
         .catch((error) => {
           console.log(error.response.data.error.message)
