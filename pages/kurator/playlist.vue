@@ -2,6 +2,7 @@
   <div class="container flex flex-col justify-center">
     <div v-for="p in playlist">
       <div :style="cardStyle">
+        <p>{{ timeToPlay(p) }}</p>
         <p
           :class="primary ? 'text-2xl' : ''"
           class="absolute text-white font-bold top-0 m-8"
@@ -13,7 +14,9 @@
         </p>
       </div>
     </div>
-    <div class="flex flex-col">
+    <div
+      class="fixed margin-auto bottom-0 mb-16 w-full flex flex-row justify-center"
+    >
       <BButton
         @click="select()"
         :applyClasses="'bg-uia-pink text-white'"
@@ -26,12 +29,13 @@
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 import io from 'socket.io-client'
 import BButton from '~/components/Button.vue'
 
-import exhibitions1 from '~/pages/kurator/exhibition1.json'
-import exhibitions2 from '~/pages/kurator/exhibition2.json'
-import exhibitions3 from '~/pages/kurator/exhibition3.json'
+import exhibition1 from '~/pages/kurator/exhibition1.json'
+import exhibition2 from '~/pages/kurator/exhibition2.json'
+import exhibition3 from '~/pages/kurator/exhibition3.json'
 
 export default {
   components: {
@@ -39,18 +43,25 @@ export default {
   },
   data() {
     return {
-      exhibitions1,
-      exhibitions2,
-      exhibitions3,
+      exhibition1,
+      exhibition2,
+      exhibition3,
       filesSelected: 0,
       playlist: []
+    }
+  },
+  computed: {
+    timeToPlay: () => (p) => {
+      return moment(p.start).toNow(true)
     }
   },
   mounted() {
     this.socket = io()
     // const code = localStorage.getItem('userCode')
-    axios.get('/api/playlist').then((data) => {
-      this.playlist = data.playlist
+    axios.get('/api/playlist').then((result) => {
+      this.playlist = result.data.playlist.map(
+        (p) => this[`exhibition${p.exID}`][p.itemID]
+      )
     })
     this.socket.emit('userStart', {
       userCode: this.userCode,
