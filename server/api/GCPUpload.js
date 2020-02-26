@@ -5,12 +5,29 @@ const FormData = require('form-data')
 const dirPath = process.cwd() + '/server'
 const { Storage } = require('@google-cloud/storage')
 const Firestore = require('@google-cloud/firestore')
+const bunyan = require('bunyan')
+const { LoggingBunyan } = require('@google-cloud/logging-bunyan')
 const utilities = require('../utilities')
 const { UserRecord, ImageRecord } = require('./Models')
 const UPLOAD_BUCKET = process.env.GCP_UPLOAD_BUCKET
 const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID
 const GCP_KEY_FILENAME = process.env.GCP_KEY_FILENAME
 const SIMILARITY_API = process.env.SIMILARITY_API
+
+// GCP Error logging
+
+const loggingBunyan = new LoggingBunyan()
+const logger = bunyan.createLogger({
+  // The JSON payload of the log as it appears in Stackdriver Logging
+  // will contain "name": "my-service"
+  name: 'my-service',
+  streams: [
+    // Log to the console at 'info' and above
+    { stream: process.stdout, level: 'info' },
+    // And log to Stackdriver Logging, logging at 'info' and above
+    loggingBunyan.stream('info')
+  ]
+})
 
 const dimuSkmu = JSON.parse(
   fs.readFileSync(`${dirPath}/data/dimu_skmu.json`, 'utf8')
@@ -92,6 +109,7 @@ function updateUserInDB(userData) {
         updatedDoc.set(userRecord).then(() => resolve(userRecord))
       })
       .catch((err) => {
+        logger.error(`Update database error: ${err}`)
         reject(err)
       })
   })
@@ -109,6 +127,7 @@ function discoverSimilarImages(imageData) {
     })
     form.submit(`${SIMILARITY_API}/api`, function(err, res) {
       if (err) {
+        logger.error(`Get similarities error: ${err}`)
         return reject(err)
       }
       res.resume()
@@ -137,6 +156,7 @@ function saveImageToBucket(userData) {
       resumable: false
     })
     stream.on('error', (err) => {
+      logger.error(`Save uploaded image to bucket error: ${err}`)
       reject(err)
     })
     stream.on('finish', () => {
@@ -168,6 +188,9 @@ function send(req, res, next) {
       }
 
       if (!['image/jpg', 'image/jpeg', 'image/png'].includes(fileType)) {
+        logger.error(
+          `Incorrect image format uploaded: ${req.file.originalname} - ${fileType}`
+        )
         return res.status(415).send({ error: new Error('Unsupported Media') })
       }
 

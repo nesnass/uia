@@ -111,7 +111,7 @@ export default {
   },
   methods: {
     prøveIgjen() {
-      this.$router.push('/1')
+      this.$router.push('/ai')
     },
     showThankyou() {
       this.thankyou = true
