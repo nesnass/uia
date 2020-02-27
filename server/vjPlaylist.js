@@ -1,12 +1,19 @@
 const PLAYLIST_INTERVAL = process.env.PLAYLIST_INTERVAL
+const moment = require('moment')
+
 let playlist = []
 let ioRef
 
 function getFinishTime() {
-  const l = playlist.length + 1
-  const d = new Date()
-  d.setSeconds(d.getSeconds() + parseInt(PLAYLIST_INTERVAL) * l)
-  return d
+  const interval = parseInt(PLAYLIST_INTERVAL)
+  let newFinishTime
+  if (playlist.length > 0) {
+    const lastItem = playlist[playlist.length - 1]
+    newFinishTime = moment(lastItem.finish).add(interval, 's')
+  } else {
+    newFinishTime = moment().add(interval, 's')
+  }
+  return newFinishTime.toDate()
 }
 
 // Remove expired items

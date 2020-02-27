@@ -6,7 +6,10 @@
       class="bg-local rounded bg-cover flex flex-col cursor-pointer relative"
     >
       <div v-if="checked" class="redDot absolute top-0 right-0 m-4"></div>
-      <div v-if="arttype == 'exhibition'" class="h-48 relative">
+      <div
+        v-if="arttype == 'exhibition'"
+        class="h-48 md:h-100 lg:h-150 relative"
+      >
         <p
           :class="primary ? 'text-2xl' : ''"
           class="absolute text-white font-bold top-0 m-8"

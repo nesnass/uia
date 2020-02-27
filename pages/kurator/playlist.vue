@@ -11,10 +11,10 @@
         now playing
       </p>
       <p v-if="index == 0" class="text-center text-2xl">
-        {{ timeToPlay(p) }}
+        {{ timeToPlay(p, index) }}
       </p>
       <p v-else class="absolute bottom-0 right-0 mr-6 mb-6">
-        {{ timeToPlay(p) }}
+        {{ timeToPlay(p, index) }}
       </p>
       <div
         v-if="selectedItem.id === p.id"
@@ -84,7 +84,7 @@ export default {
   mounted() {
     this.socket = io()
     // const code = localStorage.getItem('userCode')
-    this.timer = window.setInterval(this.checkTime, 1000)
+    this.timer = window.setInterval(this.checkTime, 500)
     this.socket.emit('userStart', {
       userCode: this.userCode,
       message: 'start'
@@ -139,11 +139,17 @@ export default {
         'background-image': `url(${url})`
       }
     },
-    timeToPlay(p) {
+    timeToPlay(p, index) {
       const now = moment(this.currentTime)
-      const then = moment(p.finish)
+      // const then = moment(p.finish)
+      const then =
+        index === 0 ? moment(p.finish) : moment(this.playlist[index - 1].finish)
       const duration = moment.duration(then.diff(now))
-      return duration.minutes() + ':' + duration.seconds()
+      let minutes = duration.minutes()
+      minutes = minutes < 10 ? '0' + minutes : minutes
+      let seconds = duration.seconds()
+      seconds = seconds < 10 ? '0' + seconds : seconds
+      return minutes + ':' + seconds
     },
     select() {
       this.$router.push('/kurator/exhibitions')
