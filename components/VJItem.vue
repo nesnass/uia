@@ -1,11 +1,12 @@
 <template>
-  <div class="p-1">
+  <div class="p-1 h-full select-none">
     <div
       :style="cardStyle"
       @click="clickItem"
-      class="bg-local rounded bg-cover h-full"
+      class="bg-local rounded bg-cover flex flex-col cursor-pointer relative"
     >
-      <div v-if="arttype == 'exhibition'" class="h-full relative">
+      <div v-if="checked" class="redDot absolute top-0 right-0 m-4"></div>
+      <div v-if="arttype == 'exhibition'" class="h-48 relative">
         <p
           :class="primary ? 'text-2xl' : ''"
           class="absolute text-white font-bold top-0 m-8"
@@ -16,7 +17,7 @@
           {{ artwork.dates }}
         </p>
       </div>
-      <div v-else>
+      <div v-else class="relative h-24 md:h-48">
         <p
           :class="primary ? 'text-2xl' : ''"
           class="absolute text-white font-bold top-0 m-8"
@@ -33,6 +34,15 @@
       type="checkbox"
     /-->
     </div>
+    <!-- Show Exhibition info under each block -->
+    <!--div v-if="arttype == 'exhibition'" class="relative p-1 text-sm">
+      <p class="font-bold">
+        {{ artwork.title }}
+      </p>
+      <p v-if="artwork.abstract" class="">
+        {{ artwork.abstract }}
+      </p>
+    </div-->
   </div>
 </template>
 
@@ -63,12 +73,13 @@ export default {
   },
   computed: {
     cardStyle() {
+      const filename =
+        this.artwork.filename.substring(0, this.artwork.filename.length - 4) +
+        '_s.jpg'
+      const url = `https://storage.googleapis.com/uia-p2/${this.artwork.path}/${filename}`
       return {
-        'background-image': `url(${'/' +
-          this.artwork.path +
-          '/' +
-          this.artwork.filename})`,
-        border: this.checked ? 'solid red 3px' : ''
+        'background-image': `url(${url})`
+        // border: this.checked ? 'solid red 3px' : ''
       }
     }
   },
@@ -96,4 +107,12 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.redDot {
+  height: 20px;
+  width: 20px;
+  background-color: #ed595d;
+  border-radius: 50%;
+  display: inline-block;
+}
+</style>

@@ -1,19 +1,24 @@
 const PLAYLIST_INTERVAL = process.env.PLAYLIST_INTERVAL
 let playlist = []
+let ioRef
 
-function getTime() {
-  const l = playlist.length
+function getFinishTime() {
+  const l = playlist.length + 1
   const d = new Date()
-  d.setSeconds(d.getSeconds() + 30 * l)
+  d.setSeconds(d.getSeconds() + parseInt(PLAYLIST_INTERVAL) * l)
   return d
 }
 
+// Remove expired items
 function checkList() {
-  const nowPlusPlaytime = new Date()
-  nowPlusPlaytime.setSeconds(nowPlusPlaytime.getSeconds() + PLAYLIST_INTERVAL)
-  playlist = playlist.filter((i) => i.start < nowPlusPlaytime)
+  /* const nowPlusPlaytime = new Date()
+   nowPlusPlaytime.setSeconds(
+    nowPlusPlaytime.getSeconds() + parseInt(PLAYLIST_INTERVAL)
+  ) */
+  const now = new Date()
+  playlist = playlist.filter((i) => i.finish > now)
   if (playlist.length > 0) {
-    setTimeout(checkList, 2000)
+    setTimeout(checkList, 1000)
   }
 }
 
@@ -25,10 +30,11 @@ function addItems(itemIDs, exID, userID) {
       itemID: i,
       exID,
       userID,
-      start: getTime()
+      finish: getFinishTime()
     }
     playlist.push(item)
   })
+  ioRef.sockets.emit('newPlaylistItem')
   setTimeout(checkList, 2000)
 }
 
@@ -47,7 +53,8 @@ function getPlaylist() {
 }
 
 function start(io) {
-  io.on('connection', function(socket) {
+  ioRef = io
+  ioRef.on('connection', function(socket) {
     console.log('a user loaded Kuratere')
     socket.on('disconnect', function() {
       console.log('user disconnected from Kuratere')

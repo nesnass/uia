@@ -1,18 +1,27 @@
 <template>
-  <div class="container flex flex-col justify-center">
+  <div class="flex flex-col justify-center relative">
     <PulseLoader :loading="loading"></PulseLoader>
+    <p class="text-4xl font-black my-4 text-center">kuratert</p>
     <div v-if="!loading" class="flex flex-wrap w-full">
       <VJItem
         v-for="item in exhibitionList"
         :key="item.id"
         :artwork="item"
-        :disabled="selectedItems.length > 1"
+        :disabled="selectedItems.length > 0"
         @change="dataChanged"
         arttype="artwork"
-        class="w-1/3 bg-gray-400 h-64"
+        class="w-1/3"
       ></VJItem>
+      <div v-if="exhibition" class="relative p-1 text-sm">
+        <p class="font-bold">
+          {{ exhibition.title }}
+        </p>
+        <p v-if="exhibition.abstract" class="">
+          {{ exhibition.abstract }}
+        </p>
+      </div>
     </div>
-    <div class="fixed margin-auto mt-8">
+    <div class="fixed w-full flex flex-row justify-center bottom-0 mb-6">
       <BButton
         @click="addItems()"
         :applyClasses="'bg-uia-pink text-white'"
@@ -31,9 +40,10 @@ import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import VJItem from '~/components/VJItem.vue'
 import BButton from '~/components/Button.vue'
 
-import exhibitions1 from '~/pages/kurator/exhibition1.json'
-import exhibitions2 from '~/pages/kurator/exhibition2.json'
-import exhibitions3 from '~/pages/kurator/exhibition3.json'
+import exhibitions from '~/pages/kurator/exhibitions.json'
+import exhibition1 from '~/pages/kurator/exhibition1.json'
+import exhibition2 from '~/pages/kurator/exhibition2.json'
+import exhibition3 from '~/pages/kurator/exhibition3.json'
 
 export default {
   components: {
@@ -43,9 +53,10 @@ export default {
   },
   data() {
     return {
-      exhibitions1,
-      exhibitions2,
-      exhibitions3,
+      exhibitions,
+      exhibition1,
+      exhibition2,
+      exhibition3,
       exhibitionList: [],
       filesSelected: 0,
       loading: false,
@@ -54,13 +65,17 @@ export default {
       selectedItems: []
     }
   },
-  computed: {},
+  computed: {
+    exhibition() {
+      return this.exhibitions.find((e) => e.id === this.exhibitionId)
+    }
+  },
   mounted() {
     this.exhibitionId = this.$route.query.id
     // this.socket = io()
     this.userCode = localStorage.getItem('userCode')
-    if (this['exhibitions' + this.exhibitionId]) {
-      this['exhibitions' + this.exhibitionId].forEach((i) => {
+    if (this['exhibition' + this.exhibitionId]) {
+      this['exhibition' + this.exhibitionId].forEach((i) => {
         i.checked = false
         this.exhibitionList.push(i)
       })
@@ -71,10 +86,10 @@ export default {
       const item = this.exhibitionList.find((el) => el.id === data.id)
       item.checked = data.checked
       const i = this.selectedItems.indexOf(data.id)
-      if (this.selectedItems.length < 2) {
+      if (this.selectedItems.length < 1) {
         this.selectedItems.push(data.id)
       } else if (i > -1) {
-        this.selectedItems.splice(i, -1)
+        this.selectedItems.splice(i, 1)
       }
     },
     addItems() {
@@ -86,7 +101,7 @@ export default {
         )
         .then(() => {
           this.loading = false
-          this.$router.push('/kurator/playlist')
+          this.$router.push('/kurator/playlist?selected=true')
         })
     }
   }

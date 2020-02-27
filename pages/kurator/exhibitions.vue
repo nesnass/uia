@@ -12,19 +12,18 @@
         @change="dataChanged"
         :class="index == 0 ? 'w-full' : 'w-1/2'"
         arttype="exhibition"
-        class="h-64"
       ></VJItem>
     </div>
     <div
-      class="fixed margin-auto bottom-0 mb-16 w-full flex flex-row justify-center"
+      class="fixed margin-auto bottom-0 mb-6 w-full flex flex-row justify-center"
     >
-      <BButton
+      <!--BButton
         @click="selectExhibition()"
         :applyClasses="'bg-uia-pink text-white'"
         :disabled="idSelected == ''"
         class="mt-4 w-48"
         >velg utstilling
-      </BButton>
+      </BButton-->
     </div>
   </div>
 </template>
@@ -33,14 +32,14 @@
 // import io from 'socket.io-client'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import VJItem from '~/components/VJItem.vue'
-import BButton from '~/components/Button.vue'
+// import BButton from '~/components/Button.vue'
 import exhibitions from '~/pages/kurator/exhibitions.json'
 
 export default {
   components: {
     PulseLoader,
-    VJItem,
-    BButton
+    VJItem
+    // BButton
   },
   data() {
     return {
@@ -72,10 +71,11 @@ export default {
       } else if (this.idSelected === data.id) {
         this.idSelected = ''
       }
-      console.log('selected: ' + this.itemIsSelected)
+      if (this.idSelected) {
+        this.selectExhibition()
+      }
     },
     selectExhibition() {
-      this.loading = true
       this.$router.push(`/kurator/select?id=${this.idSelected}`)
     }
   }
