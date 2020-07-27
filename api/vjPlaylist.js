@@ -1,6 +1,6 @@
-const PLAYLIST_INTERVAL = process.env.PLAYLIST_INTERVAL
-const moment = require('moment')
+import moment from 'moment'
 
+const PLAYLIST_INTERVAL = process.env.PLAYLIST_INTERVAL
 let playlist = []
 let ioRef
 
@@ -72,7 +72,7 @@ function start(io) {
   })
 }
 
-module.exports = {
+export default {
   addItems,
   nextItem,
   currentItem,

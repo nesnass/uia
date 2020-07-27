@@ -1,11 +1,11 @@
 /*
  Designed and developed by Richard Nesnass
 */
-const uuidv4 = require('uuid/v4')
+import uuidv4 from 'uuid/v4'
 
 // Data Models
 
-function ImageRecord(spec) {
+export function ImageRecord(spec) {
   return {
     imageCode: uuidv4(),
     fileName: spec.fileName,
@@ -20,7 +20,7 @@ function ImageRecord(spec) {
   }
 }
 
-function UserRecord(spec) {
+export function UserRecord(spec) {
   return {
     userCode: spec.userCode || '',
     imageRecords: spec.images || {},
@@ -28,16 +28,10 @@ function UserRecord(spec) {
   }
 }
 
-function User(spec) {
+export function User(spec) {
   return {
     userCode: spec.userCode || '',
     imageRecords: spec.images || {},
     latest: undefined
   }
-}
-
-module.exports = {
-  UserRecord,
-  ImageRecord,
-  User
 }

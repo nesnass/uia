@@ -1,9 +1,5 @@
 <template>
-  <button
-    :class="customClasses"
-    @click="click"
-    class="p-4 rounded justify-center"
-  >
+  <button :class="customClasses" @click="click" class="rounded justify-center">
     <span v-if="text" class="text-xl text-black">{{ text }}</span>
     <slot></slot>
     <img v-if="logo" :src="logo" class="w-24" />

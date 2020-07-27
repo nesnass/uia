@@ -1,9 +1,9 @@
 /*
  Designed and developed by Richard Nesnass
 */
-const http = require('http')
-const sharp = require('sharp')
-const multer = require('multer')
+import http from 'http'
+import sharp from 'sharp'
+import multer from 'multer'
 
 function shuffleArray(array) {
   const a = array.slice()
@@ -71,7 +71,7 @@ function httpRequest(params, postData) {
   })
 }
 
-module.exports = {
+export default {
   shuffleArray,
   getRandomInt,
   httpRequest,

@@ -1,12 +1,11 @@
-const crypto = require('crypto')
-const Firestore = require('@google-cloud/firestore')
-const express = require('express')
-const uuidv4 = require('uuid/v4')
+import crypto from 'crypto'
+import Firestore from '@google-cloud/firestore'
+import uuidv4 from 'uuid/v4'
+
 // const { User } = require('./Models')
 const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID
 const GCP_KEY_FILENAME = process.env.GCP_KEY_FILENAME
 
-const router = express.Router()
 const activeLogins = {}
 
 function createReference(data) {
@@ -21,13 +20,14 @@ function dateDiff(dateOld, dateNew) {
 }
 
 function checkAuthentication(req, res, next) {
-  const date = activeLogins[req.session.id]
+  const date = activeLogins[req.session.ref]
   if (date && dateDiff(date, new Date()) < process.env.SESSION_VALIDITY_MS) {
     return next()
   } else if (date) {
-    delete activeLogins[req.session.id]
+    delete activeLogins[req.session.ref]
+    req.session.ref = ''
   }
-  return res.status(401).send()
+  res.status(200).send({ message: 'not authorised' })
 }
 
 const config =
@@ -40,20 +40,21 @@ const config =
 
 const database = new Firestore(config)
 
-router.get('/logout', checkAuthentication, (req, res) => {
-  if (req.session.id) {
-    delete activeLogins[req.session.id]
+const logout = (req, res) => {
+  if (req.session.ref && activeLogins[req.session.ref]) {
+    delete activeLogins[req.session.ref]
+    req.session.ref = ''
   }
-  res.status(200).redirect('/')
-})
+  res.status(200).end()
+}
 
-router.post('/login', (req, res, next) => {
-  const { username, password } = req.body.data
+const login = (req, res) => {
+  const { username, password } = req.body
   if (!username || !password) {
-    return res.tatus(401).end
+    return res.status(200).end()
   }
-  if (req.session.id) {
-    delete activeLogins[req.session.id]
+  if (req.session && req.session.ref && activeLogins[req.session.ref]) {
+    delete activeLogins[req.session.ref]
   }
   const passwordHash = createReference(password)
   const query = database
@@ -65,26 +66,23 @@ router.post('/login', (req, res, next) => {
     .get()
     .then((snapshot) => {
       if (snapshot.empty) {
-        return res.status(401).end()
+        return res.status(200).send({ route: '/' })
       } else {
         // const doc = snapshot.docs[0].data()
         const myId = uuidv4()
         activeLogins[myId] = new Date()
-        req.session.id = myId
-        res.status(200).end()
+        req.session.ref = myId
+        return res.status(200).send({ user: true })
       }
     })
     .catch((err) => {
+      console.log('Error' + err)
       return res.status(401).send(new Error(err))
     })
-})
-
-/* module.exports = {
-  checkAuthentication,
-  login,
-  logout
-} */
-export default {
-  path: '/auth',
-  handler: router
 }
+
+const test = (req, res) => {
+  return res.status(200).send({ test: 'works' })
+}
+
+export default { test, login, logout, checkAuthentication }

@@ -1,8 +1,18 @@
-const bodyParser = require('body-parser')
-require('dotenv').config()
+import bodyParser from 'body-parser'
+import session from 'express-session'
+import dotenv from 'dotenv'
+dotenv.config()
 
-module.exports = {
-  mode: 'universal',
+const sessionOptions = {
+  secret: process.env.SESSION_SECRET,
+  rolling: true,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { httpOnly: true, maxAge: Number(process.env.SESSION_VALIDITY_MS) }
+}
+
+export default {
+  // mode: 'universal',
   /*
    ** Headers of the page
    */
@@ -30,7 +40,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/axios'],
   /*
    ** Nuxt.js dev-modules
    */
@@ -50,6 +60,7 @@ module.exports = {
     '@nuxtjs/axios',
     // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv'
+    // '~/io'  // Turn on io to inlcude sockets for running Prototype 2
   ],
   /*
    ** Axios module configuration
@@ -71,7 +82,10 @@ module.exports = {
   },
   serverMiddleware: [
     bodyParser.json(),
-    // Will register file from project api directory to handle /api/* requests
-    { path: '~/api', handler: '~/server/api/index.js' }
+    // session middleware
+    session(sessionOptions),
+    // Api middleware
+    // We add /api/login & /api/logout routes
+    '~/api'
   ]
 }

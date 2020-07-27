@@ -1,14 +1,15 @@
-const fs = require('fs')
-const mime = require('mime-types')
-const uuidv4 = require('uuid/v4')
-const FormData = require('form-data')
-const dirPath = process.cwd() + '/server'
-const { Storage } = require('@google-cloud/storage')
-const Firestore = require('@google-cloud/firestore')
-const bunyan = require('bunyan')
-const { LoggingBunyan } = require('@google-cloud/logging-bunyan')
-const utilities = require('../utilities')
-const { UserRecord, ImageRecord } = require('./Models')
+import fs from 'fs'
+import mime from 'mime-types'
+import uuidv4 from 'uuid/v4'
+import FormData from 'form-data'
+import { Storage } from '@google-cloud/storage'
+import Firestore from '@google-cloud/firestore'
+import bunyan from 'bunyan'
+import { LoggingBunyan } from '@google-cloud/logging-bunyan'
+import utilities from './utilities'
+import { UserRecord, ImageRecord } from './Models'
+
+const dirPath = process.cwd() + '/api'
 const UPLOAD_BUCKET = process.env.GCP_UPLOAD_BUCKET
 const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID
 const GCP_KEY_FILENAME = process.env.GCP_KEY_FILENAME
@@ -179,7 +180,7 @@ function send(req, res, next) {
       let fileName = uuidv4()
       const originalFilename = fileName + '_original.' + mimeName
       fileName = fileName + '.' + mimeName
-      const userCode = req.query['user-code'] || uuidv4()
+      const userCode = req.searchParams.get('user-code') || uuidv4()
 
       function filterForFaces(faces, matches) {
         return matches.find(
@@ -245,6 +246,6 @@ function send(req, res, next) {
     })
 }
 
-module.exports = {
+export default {
   send
 }

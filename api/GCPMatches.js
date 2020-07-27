@@ -1,6 +1,7 @@
-const fs = require('fs')
-const dirPath = process.cwd() + '/server'
-const Firestore = require('@google-cloud/firestore')
+import fs from 'fs'
+import Firestore from '@google-cloud/firestore'
+
+const dirPath = process.cwd() + '/api'
 const CURATED_BUCKET = process.env.GCP_CURATED_BUCKET
 const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID
 const GCP_KEY_FILENAME = process.env.GCP_KEY_FILENAME
@@ -105,7 +106,7 @@ const allSharedItems = function(req, res) {
     })
 }
 
-module.exports = {
+export default {
   getImage,
   share,
   allSharedItems

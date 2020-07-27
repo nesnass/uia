@@ -37,7 +37,7 @@
       "type": "chrome",
       "request": "launch",
       "name": "client: chrome",
-      "url": "http://localhost:3000",
+      "url": "http://192.168.1.11:3000",
       "webRoot": "${workspaceFolder}"
     },
     {
@@ -46,7 +46,7 @@
       "name": "server: nuxt",
       "args": ["dev"],
       "osx": {
-        "program": "${workspaceFolder}/server/index.js"
+        "program": "${workspaceFolder}/node_modules/.bin/nuxt"
       },
       "linux": {
         "program": "${workspaceFolder}/node_modules/.bin/nuxt"

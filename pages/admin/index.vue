@@ -25,6 +25,13 @@
             >Log out</a
           >
         </li>
+        <li class="-mb-px mr-1">
+          <a
+            @click="test"
+            class="bg-white inline-block py-2 px-4 hover:text-blue-800 font-semibold cursor-pointer"
+            >Test</a
+          >
+        </li>
       </ul>
     </div>
     <Upload v-if="selectedTab === 'upload'" />
@@ -33,11 +40,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import axios from 'axios'
 import Upload from './upload'
 import Shared from './shared'
 export default {
-  middleware: 'auth',
   components: {
     Upload,
     Shared
@@ -47,13 +53,14 @@ export default {
       selectedTab: 'upload'
     }
   },
-  computed: {
-    ...mapState('auth', ['loggedIn', 'user'])
-  },
   methods: {
-    async logout() {
-      await this.$auth.logout()
-      this.$router.push('/login')
+    logout() {
+      axios.get('/api/auth/logout')
+      this.$router.push('/')
+    },
+    async test() {
+      const result = await axios.get('/api/auth/test')
+      console.dir(result)
     }
   }
 }

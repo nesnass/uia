@@ -1,6 +1,6 @@
-const AWS = require('aws-sdk')
-const uuidv4 = require('uuid/v4')
-const UserImage = require('../database/UserImage')
+import AWS from 'aws-sdk'
+import uuidv4 from 'uuid/v4'
+import UserImage from '../database/UserImage'
 
 AWS.config.update({ region: 'eu-north-1' })
 const S3_BUCKET = process.env.S3_BUCKET
@@ -49,6 +49,6 @@ const signUpload = function(req, res) {
   )
 }
 
-module.exports = {
+export default {
   signUpload
 }
