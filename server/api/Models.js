@@ -28,7 +28,16 @@ function UserRecord(spec) {
   }
 }
 
+function User(spec) {
+  return {
+    userCode: spec.userCode || '',
+    imageRecords: spec.images || {},
+    latest: undefined
+  }
+}
+
 module.exports = {
   UserRecord,
-  ImageRecord
+  ImageRecord,
+  User
 }
