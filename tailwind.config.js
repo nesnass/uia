@@ -8,6 +8,7 @@ module.exports = {
   prefix: '',
   important: false,
   separator: ':',
+  purge: ['./components/**/*.vue', './pages/**/*.vue'],
   theme: {
     extend: {
       colors: {

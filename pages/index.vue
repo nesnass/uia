@@ -36,12 +36,12 @@
       @cancel-login="showLogin = false"
       class="absolute top-0 mt-24 flex self-center"
     />
-    <BButton
+    <!--BButton
       @click.stop="login()"
       :applyClasses="'bg-gray-200'"
       class="absolute bottom-0 my-4 w-24 flex self-center"
       >logg in</BButton
-    >
+    -->
     <!--p class="text-sm absolute bottom-0">
       Merk: Vi bruker cookies for å finne dine tidligere bilder
     </p-->
@@ -51,13 +51,13 @@
 <script>
 import axios from 'axios'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import BButton from '~/components/Button.vue'
+// import BButton from '~/components/Button.vue'
 import LoginCard from '~/components/LoginCard.vue'
 
 export default {
   components: {
     PulseLoader,
-    BButton,
+    // BButton,
     LoginCard
   },
   data() {
