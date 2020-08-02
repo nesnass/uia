@@ -11,7 +11,7 @@
     <div class="flex flex-col items-center">
       <PulseLoader :loading="loading" color="white"></PulseLoader>
       <p v-show="loading" class="pt-4 text-white text-center text-xs px-10">
-        Ditt bilde blir nå sammenlignet med 1600 kunstverk (ca 15 sek).
+        Ditt bilde blir nå sammenlignet med 1600 kunstverk (ca 10 sek).
       </p>
       <div v-show="!loading">
         <input

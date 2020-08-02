@@ -1,19 +1,6 @@
-import bodyParser from 'body-parser'
-import session from 'express-session'
 import dotenv from 'dotenv'
-const MemoryStore = require('memorystore')(session)
-dotenv.config()
 
-const sessionOptions = {
-  secret: process.env.SESSION_SECRET,
-  rolling: true,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { httpOnly: true, maxAge: Number(process.env.SESSION_VALIDITY_MS) },
-  store: new MemoryStore({
-    checkPeriod: 86400000 // prune expired entries every 24h
-  })
-}
+dotenv.config()
 
 export default {
   // mode: 'universal',
@@ -85,9 +72,6 @@ export default {
     }
   },
   serverMiddleware: [
-    bodyParser.json(),
-    // session middleware
-    session(sessionOptions),
     // Api middleware
     // We add /api/login & /api/logout routes
     '~/api'
