@@ -23,9 +23,11 @@ export const actions = {
   }, */
   async login({ commit }, { username, password }) {
     try {
-      const { data } = await axios.post('/api/auth/login', {
-        username,
-        password
+      const { data } = await axios.get('/api/auth/login', {
+        params: {
+          username,
+          password
+        }
       })
       if (data.user) {
         commit('SET_USER', data)

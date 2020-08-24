@@ -1,6 +1,9 @@
 import dotenv from 'dotenv'
+import session from 'express-session'
 
 dotenv.config()
+
+const MemoryStore = require('memorystore')(session)
 
 export default {
   // mode: 'universal',
@@ -50,8 +53,25 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv'
+    '@nuxtjs/dotenv',
     // '~/io'  // Turn on io to inlcude sockets for running Prototype 2
+    [
+      'nuxt-session',
+      {
+        // express-session options:
+        secret: process.env.SESSION_SECRET,
+        rolling: true,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+          httpOnly: true,
+          maxAge: Number(process.env.SESSION_VALIDITY_MS)
+        },
+        store: new MemoryStore({
+          checkPeriod: 86400000 // prune expired entries every 24h
+        })
+      }
+    ]
   ],
   /*
    ** Axios module configuration

@@ -49,7 +49,8 @@ const logout = (req, res) => {
 }
 
 const login = (req, res) => {
-  const { username, password } = req.body
+  const username = req.searchParams.get('username')
+  const password = req.searchParams.get('password')
   if (!username || !password) {
     return res.status(200).end()
   }

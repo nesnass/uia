@@ -16,6 +16,7 @@ export function ImageRecord(spec) {
     labels: spec.labels,
     bestMatch: spec.bestMatch,
     shared: false,
+    pdf: false,
     created: new Date()
   }
 }

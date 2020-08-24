@@ -4,27 +4,42 @@
       <p class="py-4">Shared With SKMU</p>
       <div v-for="item in sharedImages" class="flex flex-col pt-4">
         <p class="text-xs">usercode: {{ item.userCode }}</p>
-        <div v-for="image in item.imageRecords" class="flex flex-row pl-4">
-          <p
-            @click="itemDetails(image, item.userCode)"
-            class="text-blue-500 cursor-pointer"
-          >
-            Preview&nbsp;
-          </p>
-          <a
-            v-if="userImage"
-            :href="userImage.originalUrl"
-            class="text-orange-500"
-            target="_none"
-            >User Image&nbsp;</a
-          >
-          <a
-            v-if="museumImage"
-            :href="`${museumImage.url}?dimension=max`"
-            class="text-green-500"
-            target="_none"
-            >Museum Image</a
-          >
+        <div
+          v-for="image in sortByDate(item.imageRecords)"
+          class="flex flex-col m-1 pl-4 bg-gray-100 rounded-md"
+        >
+          <!--img :src="image.originalUrl" class="w-5 h-5" /-->
+          {{ timeStringForMillis(image.created) }}<br />
+          <div class="flex flex-row">
+            <p
+              @click="itemDetails(image, item.userCode)"
+              class="text-blue-500 cursor-pointer"
+            >
+              Preview&nbsp;
+            </p>
+            <a
+              v-if="userImage"
+              :href="userImage.originalUrl"
+              class="text-orange-500"
+              target="_none"
+              >User Image&nbsp;</a
+            >
+            <a
+              v-if="museumImage"
+              :href="`${museumImage.url}?dimension=max`"
+              class="text-green-500"
+              target="_none"
+              >Museum Image&nbsp;</a
+            >
+            <a
+              :href="
+                `/api/pdf?user-code=${item.userCode}&image-code=${image.imageCode}`
+              "
+              :class="[image.pdf ? 'text-gray-500' : 'text-purple-600']"
+              target="_none"
+              >{{ image.pdf ? '✔︎' : '' }} PDF</a
+            >
+          </div>
         </div>
         <hr />
       </div>
@@ -141,6 +156,25 @@ export default {
           this.museumImage = data.data.museumImage
           this.loading = false
         })
+    },
+    pdf(item, userCode) {
+      this.selectedUserCode = userCode
+      this.selectedItem = item
+      axios.get(
+        `/api/pdf?user-code=${this.selectedUserCode}&image-code=${this.selectedItem.imageCode}`
+      )
+    },
+    sortByDate(records) {
+      return records.sort((a, b) => {
+        return a.created < b.created ? 1 : -1
+      })
+    },
+    timeStringForMillis(millis) {
+      const d = new Date(millis)
+      const hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours()
+      const minutes =
+        d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes()
+      return `${hours}:${minutes} - ${d.getDay()}/${d.getMonth()}/${d.getFullYear()}`
     }
   }
 }
@@ -155,9 +189,27 @@ export default {
   filter: grayscale();
 }
 @media print {
+  header,
+  footer,
+  aside,
+  nav,
+  form,
+  iframe,
+  .menu,
+  .hero,
+  .adslot {
+    display: none;
+  }
   .no-print {
     display: none;
   }
+  div {
+    break-inside: avoid;
+  }
+}
+@page {
+  size: landscape;
+  margin: 1cm;
 }
 /* Sample `apply` at-rules with Tailwind CSS
 .container {

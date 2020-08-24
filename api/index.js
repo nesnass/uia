@@ -1,23 +1,23 @@
 import url from 'url'
 import express from 'express'
-import bodyParser from 'body-parser'
-import session from 'express-session'
+// import session from 'express-session'
 import vjPlaylist from './vjPlaylist.js'
 import utilities from './utilities.js'
 import auth from './auth.js'
 import upload from './GCPUpload.js'
 import matches from './GCPMatches.js'
 
-const MemoryStore = require('memorystore')(session)
+// const MemoryStore = require('memorystore')(session)
 const router = express.Router()
 // Transform req & res to have the same API as express
 // So we can use res.status() & res.json()
 const app = express()
 
-app.use(bodyParser.json())
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 // session middleware
-const sessionOptions = {
+/* const sessionOptions = {
   secret: process.env.SESSION_SECRET,
   rolling: true,
   resave: false,
@@ -28,7 +28,7 @@ const sessionOptions = {
   })
 }
 session(sessionOptions)
-app.use(session(sessionOptions))
+app.use(session(sessionOptions)) */
 
 router.use((req, res, next) => {
   Object.setPrototypeOf(req, app.request)
@@ -94,9 +94,15 @@ router.put('/playlist/additems', (req, res) => {
   res.status(200).send()
 })
 
+// --------------- PDF ------------------
+
+router.get('/pdf', auth.checkAuthentication, (req, res, next) => {
+  matches.pdf(req, res)
+})
+
 // ---------------  Auth ----------------
 
-router.post('/auth/login', (req, res, next) => {
+router.get('/auth/login', (req, res, next) => {
   auth.login(req, res)
 })
 
