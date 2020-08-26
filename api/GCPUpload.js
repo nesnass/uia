@@ -126,7 +126,7 @@ function discoverSimilarImages(imageData) {
       contentType: 'image/jpeg',
       knownLength: imageData.length
     })
-    form.submit(`${SIMILARITY_API}/api/userimage`, function(err, res) {
+    form.submit(`${SIMILARITY_API}/api`, function(err, res) {
       if (err) {
         logger.error(`Get similarities error: ${err}`)
         return reject(err)
