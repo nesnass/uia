@@ -12,7 +12,7 @@ handlers:
     script: auto
     secure: always
 vpc_access_connector:
-  name: CONNECTOR_NAME
+  name: uia-ml-connector
 env_variables:
   HOST: '0.0.0.0'
   NODE_ENV: 'production'
