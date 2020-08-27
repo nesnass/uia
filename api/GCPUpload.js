@@ -184,7 +184,9 @@ function send(req, res, next) {
 
       function filterForFaces(faces, matches) {
         return matches.find(
-          (m) => dimuSkmu[m.filename].number_of_detected_faces <= faces
+          (m) =>
+            dimuSkmu[m.filename] &&
+            dimuSkmu[m.filename].number_of_detected_faces <= faces
         )
       }
 
