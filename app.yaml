@@ -1,0 +1,26 @@
+runtime: nodejs12
+instance_class: F2
+handlers:
+  - url: /_nuxt
+    static_dir: .nuxt/dist/client
+    secure: always
+  - url: /(.*\.(gif|png|jpg|ico|txt))$
+    static_files: static/\1
+    upload: static/.*\.(gif|png|jpg|ico|txt)$
+    secure: always
+  - url: /.*
+    script: auto
+    secure: always
+vpc_access_connector:
+  name: CONNECTOR_NAME
+env_variables:
+  HOST: '0.0.0.0'
+  NODE_ENV: 'production'
+  GCP_PROJECT_ID: 'organic-nation-267514'
+  GCP_UPLOAD_BUCKET: 'uia-uploads'
+  GCP_CURATED_BUCKET: 'uia-curated'
+  SIMILARITY_API: 'http://10.156.0.63'
+  PLAYLIST_INTERVAL: 60
+  NUXT_TELEMETRY_DISABLED: 1
+  SESSION_SECRET: 'testingInTheUIA'
+  SESSION_VALIDITY_MS: 86400000
