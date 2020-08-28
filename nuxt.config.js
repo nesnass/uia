@@ -1,6 +1,9 @@
 import dotenv from 'dotenv'
 import session from 'express-session'
 
+require('@google-cloud/debug-agent').start({
+  serviceContext: { enableCanary: false }
+})
 dotenv.config()
 
 const MemoryStore = require('memorystore')(session)

@@ -15,6 +15,7 @@
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
+    "@google-cloud/debug-agent": "^5.1.2",
     "@google-cloud/firestore": "^3.5.0",
     "@google-cloud/logging-bunyan": "^2.0.3",
     "@google-cloud/storage": "^4.3.0",

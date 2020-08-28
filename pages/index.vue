@@ -17,7 +17,7 @@
         <input
           id="file-input"
           ref="file-input"
-          @change="handleFileChange($event)"
+          @input="handleFileChange($event)"
           accept="image/png, image/jpeg, image/jpg"
           type="file"
           name="file-input"
@@ -114,11 +114,17 @@ export default {
           }
         })
         .then((response) => {
+          this.$refs['file-input'].value = null
           this.loading = false
-          if (response.data.userCode && !code) {
-            window.localStorage.setItem('userCode', response.data.userCode)
+          this.filesSelected = 0
+          if (response.status !== 200) {
+            console.log(response.statusText)
+          } else {
+            if (response.data.userCode && !code) {
+              window.localStorage.setItem('userCode', response.data.userCode)
+            }
+            this.$router.push('/ai/latest')
           }
-          this.$router.push('/ai/latest')
         })
         .catch((error) => {
           console.log(error.response.data)

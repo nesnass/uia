@@ -106,8 +106,12 @@ function updateUserInDB(userData) {
         })
         userRecord.imageRecords[imageRecord.imageCode] = imageRecord
         userRecord.latest = imageRecord.imageCode
-        const updatedDoc = database.collection('userMatches').doc(userCode)
-        updatedDoc.set(userRecord).then(() => resolve(userRecord))
+        userRef
+          .set(userRecord)
+          .then((userRecord) => resolve(userRecord))
+          .catch((err) => {
+            console.log(err)
+          })
       })
       .catch((err) => {
         logger.error(`Update database error: ${err}`)
@@ -207,31 +211,38 @@ function send(req, res, next) {
             .then((publicUrl) => {
               discoverSimilarImages(resizedFile)
                 .then((response) => {
-                  const r = JSON.parse(response)
-                  const matches = r.length > 0 ? r[0] : []
-                  const labels = r.length > 1 ? r[1] : []
-                  // First item is the user image, remove it
-                  matches.shift()
-                  // adjust to face count greater than one if necessary
-                  const faces = labels.number_of_faces
-                    ? labels.number_of_faces[0]
-                    : 0
-                  const bestMatch = filterForFaces(faces, matches)
-                  updateUserInDB({
-                    userCode,
-                    fileName,
-                    originalUrl,
-                    fileType,
-                    publicUrl,
-                    matches,
-                    labels,
-                    bestMatch
-                  }).then((userRecord) =>
-                    res.status(200).send({
-                      userRecord,
-                      userCode
-                    })
-                  )
+                  try {
+                    const r = JSON.parse(response)
+                    const matches = r[0]
+                    const labels = r[1]
+                    // First item is the user image, so remove it, and there should be more than one match in the list
+                    // TODO: List is not sorted?!
+                    matches.shift()
+                    if (matches.length === 0) throw new Error('No matches!')
+                    // adjust to face count greater than one if necessary
+                    const faces = labels.number_of_faces
+                      ? labels.number_of_faces[0]
+                      : 0
+                    const bestMatch =
+                      faces > 0 ? filterForFaces(faces, matches) : matches[0]
+                    updateUserInDB({
+                      userCode,
+                      fileName,
+                      originalUrl,
+                      fileType,
+                      publicUrl,
+                      matches,
+                      labels,
+                      bestMatch
+                    }).then((userRecord) =>
+                      res.status(200).send({
+                        userRecord,
+                        userCode
+                      })
+                    )
+                  } catch (err) {
+                    res.status(204).end()
+                  }
                 })
                 .catch((err) => {
                   console.log('Error setting document in DB', err)
