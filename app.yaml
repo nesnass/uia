@@ -19,7 +19,7 @@ env_variables:
   GCP_PROJECT_ID: 'organic-nation-267514'
   GCP_UPLOAD_BUCKET: 'uia-uploads'
   GCP_CURATED_BUCKET: 'uia-curated'
-  SIMILARITY_API: 'http://10.156.0.63'
+  SIMILARITY_API: 'http://10.166.0.10'
   PLAYLIST_INTERVAL: 60
   NUXT_TELEMETRY_DISABLED: 1
   SESSION_SECRET: 'testingInTheUIA'
