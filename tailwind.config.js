@@ -8,6 +8,7 @@ module.exports = {
   prefix: '',
   important: false,
   separator: ':',
+  purge: ['./components/**/*.vue', './pages/**/*.vue'],
   theme: {
     extend: {
       colors: {
@@ -16,7 +17,8 @@ module.exports = {
         'uia-selected': '#8D8884',
         'uia-burgundy': '#330033',
         'uia-lilla': '#4E1681',
-        'uia-pink': '#e65a5a'
+        'uia-pink': '#e65a5a',
+        'uia-bg': '#ed595d'
       }
     },
     screens: {
@@ -161,7 +163,10 @@ module.exports = {
       '40': '10rem',
       '48': '12rem',
       '56': '14rem',
-      '64': '16rem'
+      '64': '16rem',
+      '100': '25rem',
+      '150': '35rem',
+      '200': '50rem'
     },
     backgroundColor: (theme) => theme('colors'),
     backgroundPosition: {
@@ -188,6 +193,7 @@ module.exports = {
       none: '0',
       sm: '0.125rem',
       default: '0.25rem',
+      ms: '0.5rem',
       md: '1rem',
       lg: '3rem',
       full: '9999px'
@@ -278,7 +284,8 @@ module.exports = {
       '3xl': '1.875rem',
       '4xl': '2.25rem',
       '5xl': '3rem',
-      '6xl': '4rem'
+      '6xl': '4rem',
+      '8xl': '6rem'
     },
     fontWeight: {
       hairline: '100',

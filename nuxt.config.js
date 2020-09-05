@@ -1,8 +1,15 @@
-const bodyParser = require('body-parser')
-require('dotenv').config()
+import dotenv from 'dotenv'
+import session from 'express-session'
 
-module.exports = {
-  mode: 'universal',
+require('@google-cloud/debug-agent').start({
+  serviceContext: { enableCanary: false }
+})
+dotenv.config()
+
+const MemoryStore = require('memorystore')(session)
+
+export default {
+  // mode: 'universal',
   /*
    ** Headers of the page
    */
@@ -30,7 +37,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/axios'],
   /*
    ** Nuxt.js dev-modules
    */
@@ -49,7 +56,25 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv'
+    '@nuxtjs/dotenv',
+    // '~/io'  // Turn on io to inlcude sockets for running Prototype 2
+    [
+      'nuxt-session',
+      {
+        // express-session options:
+        secret: process.env.SESSION_SECRET,
+        rolling: true,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+          httpOnly: true,
+          maxAge: Number(process.env.SESSION_VALIDITY_MS)
+        },
+        store: new MemoryStore({
+          checkPeriod: 86400000 // prune expired entries every 24h
+        })
+      }
+    ]
   ],
   /*
    ** Axios module configuration
@@ -70,8 +95,8 @@ module.exports = {
     }
   },
   serverMiddleware: [
-    bodyParser.json(),
-    // Will register file from project api directory to handle /api/* requests
-    { path: '~/api', handler: '~/server/api/index.js' }
+    // Api middleware
+    // We add /api/login & /api/logout routes
+    '~/api'
   ]
 }
