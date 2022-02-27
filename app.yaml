@@ -12,14 +12,14 @@ handlers:
     script: auto
     secure: always
 vpc_access_connector:
-  name: projects/organic-nation-267514/locations/europe-west3/connectors/uia-ml-connector
+  name: projects/organic-nation-267514/locations/europe-west3/connectors/europe-west-3
 env_variables:
   HOST: '0.0.0.0'
   NODE_ENV: 'production'
   GCP_PROJECT_ID: 'organic-nation-267514'
   GCP_UPLOAD_BUCKET: 'uia-uploads'
   GCP_CURATED_BUCKET: 'uia-curated'
-  SIMILARITY_API: 'http://10.166.0.10'
+  SIMILARITY_API: 'http://10.156.15.193'
   PLAYLIST_INTERVAL: 60
   NUXT_TELEMETRY_DISABLED: 1
   SESSION_SECRET: 'testingInTheUIA'

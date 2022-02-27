@@ -10,26 +10,26 @@
             >Shared</a
           >
         </li>
-        <li class="-mb-px mr-1">
+        <!--li class="-mb-px mr-1">
           <a
             :class="{ tabSelected: selectedTab === 'upload' }"
             @click="selectedTab = 'upload'"
             class="bg-white inline-block py-2 px-4 hover:text-blue-800 font-semibold cursor-pointer"
             >Upload</a
           >
-        </li>
-        <li class="-mb-px mr-1">
-          <a
-            @click="logout"
-            class="bg-white inline-block py-2 px-4 hover:text-blue-800 font-semibold cursor-pointer"
-            >Log out</a
-          >
-        </li>
+        </li-->
         <li class="-mb-px mr-1">
           <a
             @click="test"
             class="bg-white inline-block py-2 px-4 hover:text-blue-800 font-semibold cursor-pointer"
-            >Test</a
+            >Ping</a
+          >
+        </li>
+        <li class="-mb-px mr-1">
+          <a
+            @click="ai()"
+            class="bg-white text-uia-korall inline-block py-2 px-4 hover:text-blue-800 font-semibold cursor-pointer"
+            >AI</a
           >
         </li>
       </ul>
@@ -50,10 +50,14 @@ export default {
   },
   data() {
     return {
-      selectedTab: 'upload'
+      selectedTab: 'shared'
     }
   },
   methods: {
+    ai() {
+      axios.get('/api/auth/logout')
+      this.$router.push('/')
+    },
     logout() {
       axios.get('/api/auth/logout')
       this.$router.push('/')

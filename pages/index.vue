@@ -5,8 +5,9 @@
   >
     <p class="text-5xl font-bold mb-24 text-center text-white">meg + kunst</p>
     <p class="text-2xl mb-16 px-10 text-center text-white">
-      Når kunsten treffer, tror vi det er fordi det minner oss om noe i oss
-      selv, eller omgivelsene våre, som vi ikke får tak i på egen hånd.
+      Når kunsten treffer, tror vi det er fordi kunsten uttrykker noe om oss,
+      eller omgivelsene våre, som ikke kunne blitt kommunisert på noen annen
+      måte.
     </p>
     <div class="flex flex-col items-center">
       <PulseLoader :loading="loading" color="white"></PulseLoader>
@@ -17,7 +18,8 @@
         <input
           id="file-input"
           ref="file-input"
-          @input="handleFileChange($event)"
+          @change="handleFileChange($event)"
+          aria-hidden="true"
           accept="image/png, image/jpeg, image/jpg"
           type="file"
           name="file-input"
@@ -36,12 +38,12 @@
       @cancel-login="showLogin = false"
       class="absolute top-0 mt-24 flex self-center"
     />
-    <BButton
+    <!--BButton
       @click.stop="login()"
       :applyClasses="'bg-gray-200'"
       class="absolute bottom-0 my-4 w-24 flex self-center cursor-pointer"
       >logg in</BButton
-    >
+    -->
     <!--p class="text-sm absolute bottom-0">
       Merk: Vi bruker cookies for å finne dine tidligere bilder
     </p-->
@@ -51,13 +53,13 @@
 <script>
 import axios from 'axios'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import BButton from '~/components/Button.vue'
+// import BButton from '~/components/Button.vue'
 import LoginCard from '~/components/LoginCard.vue'
 
 export default {
   components: {
     PulseLoader,
-    BButton,
+    // BButton,
     LoginCard
   },
   data() {

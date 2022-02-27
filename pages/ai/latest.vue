@@ -31,52 +31,76 @@
       </div>
       <p v-if="museumImage" class="text-lg text-center pt-4 font-bold">
         <span class="italic">{{
-          museumImage.metadata['artifact.ingress.title'] +
-            ' (' +
-            museumImage.metadata['artifact.ingress.production.toYear'] +
-            ').'
+          museumImage.metadata['artifact.ingress.title']
         }}</span>
+        {{
+          '(' +
+            museumImage.metadata['artifact.ingress.production.toYear'] +
+            '),'
+        }}
         av
-        {{ museumImage.metadata['artifact.ingress.producer'] }}
+        {{ getMuseumImageArtistName }}
       </p>
-      <div
-        v-if="museumImage"
-        class="flex flex-row items-center justify-center mx-4 mt-4"
-      >
-        <img src="@/assets/icons/facebook.png" class="mx-2 w-8 h-8" />
-        <img
-          @click="share()"
-          :class="{ disabled: userImage.shared }"
-          src="@/assets/icons/share.png"
-          class="mx-2 w-24"
-        />
-        <img src="@/assets/icons/instagram.png" class="mx-2 w-8 h-8" />
-      </div>
-      <div class="flex flex-col items-center my-8">
-        <BButton
-          @click="prøveIgjen()"
-          class="mt-4 w-36 bg-white border border-uia-bg text-uia-bg"
-          >prøv igjen?</BButton
-        >
+      <div class="flex flex-row items-center my-8 mx-4 justify-center">
+        <div class="flex flex-col justify-center items-center mr-4">
+          <label
+            v-if="museumImage"
+            :class="{ disabled: userImage.shared, pulse: !userImage.shared }"
+            class="flex flex-col justify-center items-center"
+          >
+            <img
+              @click="share()"
+              src="@/assets/icons/dele.png"
+              class="mx-2 w-24"
+            />
+            <p>del</p>
+          </label>
+        </div>
+        <div class="flex flex-col justify-center items-center ml-4">
+          <input
+            id="file-input"
+            ref="file-input"
+            @change="handleFileChange($event)"
+            accept="image/png, image/jpeg, image/jpg"
+            type="file"
+            name="file-input"
+            style="display: none"
+          />
+          <label
+            v-show="filesSelected === 0"
+            for="file-input"
+            class="flex flex-col justify-center items-center"
+          >
+            <img src="@/assets/icons/provigjen2.png" class="mx-2 w-24" />
+            <p>prøve igjen?</p>
+          </label>
+        </div>
+        <!--button @click="thankyou = !thankyou" class="z-20">TEST</button-->
       </div>
       <!--p class="text-xs">{{ userCode }}</p-->
     </div>
 
     <div
       v-if="thankyou"
-      class="fixed inset-x-0 text-center mt-48 top-0 h-20 text-8xl italic text-uia-bg font-bold"
+      class="fixed top-0 left-0 w-full h-full text-8xl italic text-uia-bg font-bold flex flex-col items-center justify-center"
     >
-      takk!
+      <p>takk!</p>
+    </div>
+    <div
+      v-if="loading"
+      class="fixed z-10 top-0 left-0 w-full h-full bg-gray-800 opacity-75 flex flex-col items-center justify-center"
+    >
+      <PulseLoader :loading="loading" color="white"></PulseLoader>
     </div>
   </div>
 </template>
 
 <script>
+import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import axios from 'axios'
-import BButton from '~/components/Button.vue'
 export default {
   components: {
-    BButton
+    PulseLoader
   },
   data() {
     return {
@@ -98,6 +122,14 @@ export default {
       return this.museumImage
         ? `background-image: url(${this.museumImage.url})`
         : ''
+    },
+    getMuseumImageArtistName() {
+      const title = this.museumImage.metadata['artifact.ingress.producer']
+      const firstSecond = title.split(',')
+      console.log(firstSecond)
+      return firstSecond.length === 2
+        ? firstSecond[1] + ' ' + firstSecond[0]
+        : title
     }
   },
   mounted() {
@@ -110,8 +142,42 @@ export default {
     })
   },
   methods: {
-    prøveIgjen() {
-      this.$router.push('/')
+    handleFileChange(event) {
+      this.filesSelected = event.target.files.length
+      if (this.filesSelected > 0) {
+        this.loading = true
+        const file = event.target.files[0]
+        // this.getSignedRequest(file)
+        this.uploadFile(file)
+      }
+    },
+    uploadFile(file) {
+      const code = window.localStorage.getItem('userCode') || ''
+      const formData = new FormData()
+      formData.append('uploadedFile', file)
+      axios
+        .post(`/api/upload?user-code=${code}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+            // 'Content-Type': file.type
+          }
+        })
+        .then((response) => {
+          this.$refs['file-input'].value = null
+          this.loading = false
+          this.filesSelected = 0
+          if (response.status !== 200) {
+            console.log(response.statusText)
+          } else {
+            if (response.data.userCode && !code) {
+              window.localStorage.setItem('userCode', response.data.userCode)
+            }
+            this.$router.go(0)
+          }
+        })
+        .catch((error) => {
+          console.log(error.response.data)
+        })
     },
     showThankyou() {
       this.thankyou = true
@@ -140,13 +206,66 @@ export default {
 </script>
 
 <style>
+.pulse {
+  -webkit-animation: pulse 2s infinite;
+  animation: pulse 2s infinite;
+}
+
+@-webkit-keyframes pulse {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    -webkit-transform: scale(1, 1);
+  }
+  40%,
+  60% {
+    -webkit-transform: scale(1.2, 1.2);
+  }
+}
+@-moz-keyframes pulse {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    -moz-transform: scale(1, 1);
+  }
+  40%,
+  60% {
+    -moz-transform: scale(1.2, 1.2);
+  }
+}
+@keyframes pulse {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
+    transform: scale(1, 1);
+  }
+  40%,
+  60% {
+    -webkit-transform: scale(1.2, 1.2);
+    -moz-transform: scale(1.2, 1.2);
+    -ms-transform: scale(1.2, 1.2);
+    -o-transform: scale(1.2, 1.2);
+    transform: scale(1.2, 1.2);
+  }
+}
+
 .disabled {
   /*   -webkit-filter: grayscale();
   -moz-filter: grayscale();
   -ms-filter: grayscale();
   -o-filter: grayscale();
   filter: grayscale(); */
-  opacity: 50%;
+  opacity: 0.3;
 }
 /* Sample `apply` at-rules with Tailwind CSS
 .container {

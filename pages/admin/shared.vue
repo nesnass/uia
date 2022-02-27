@@ -1,52 +1,57 @@
 <template>
-  <div class="container flex flex-row max-w-5xl">
-    <div class="bg-gray-200 w-1/2 no-print">
-      <p class="py-4">Shared With SKMU</p>
-      <div v-for="item in sharedImages" class="flex flex-col pt-4">
-        <p class="text-xs">usercode: {{ item.userCode }}</p>
-        <div
-          v-for="image in sortByDate(item.imageRecords)"
-          class="flex flex-col m-1 pl-4 bg-gray-100 rounded-md"
-        >
-          <!--img :src="image.originalUrl" class="w-5 h-5" /-->
-          {{ timeStringForMillis(image.created) }}<br />
-          <div class="flex flex-row">
-            <p
-              @click="itemDetails(image, item.userCode)"
-              class="text-blue-500 cursor-pointer"
-            >
-              Preview&nbsp;
-            </p>
-            <a
-              v-if="userImage"
-              :href="userImage.originalUrl"
-              class="text-orange-500"
-              target="_none"
-              >User Image&nbsp;</a
-            >
-            <a
-              v-if="museumImage"
-              :href="`${museumImage.url}?dimension=max`"
-              class="text-green-500"
-              target="_none"
-              >Museum Image&nbsp;</a
-            >
-            <a
-              :href="
-                `/api/pdf?user-code=${item.userCode}&image-code=${image.imageCode}`
-              "
-              :class="[image.pdf ? 'text-gray-500' : 'text-purple-600']"
-              target="_none"
-              >{{ image.pdf ? '✔︎' : '' }} PDF</a
-            >
-          </div>
+  <div class="container flex flex-row max-w-5xl relative">
+    <div class="bg-gray-200 no-print">
+      <div class="p-2 flex flex-row items-center justify-between">
+        <div>
+          <p class="font-bold">
+            Shared With SKMU
+          </p>
+          <span>{{ imagesByUser.length }} users</span>
+          <span>{{ grandTotal }} matches</span>
         </div>
-        <hr />
+        <div>
+          <input id="one" :value="false" v-model="dateViewMode" type="radio" />
+          <label for="one">By User</label>
+          <input id="two" :value="true" v-model="dateViewMode" type="radio" />
+          <label for="two">By Day</label>
+        </div>
+      </div>
+      <!-- View by Day -->
+      <div v-if="dateViewMode" class="max-h-screen overflow-auto">
+        <div v-for="(day, i) in imagesByDay" :key="'day-' + i">
+          <p class="m-2 text-xs">{{ dayStringForMillis(day[0].created) }}</p>
+          <ImagePair
+            v-for="(imagePair, j) in day"
+            :key="'imagepair-' + j"
+            :imagePair="imagePair"
+            :userCode="imagePair.userCode"
+            @click.native="itemDetails(imagePair, imagePair.userCode)"
+          />
+          <hr class="pb-5 border-t-8 border-gray-800" />
+        </div>
+      </div>
+      <!-- View by user -->
+      <div v-else class="max-h-screen overflow-auto">
+        <div
+          v-for="(item, i) in imagesByUser"
+          :key="'item-' + i"
+          class="flex flex-col pt-4"
+        >
+          <p class="text-xs m-2">usercode: {{ item.userCode }}</p>
+          <ImagePair
+            v-for="(imagePair, j) in sortByDate(item.imageRecords)"
+            :key="'imagepair-' + j"
+            :imagePair="imagePair"
+            :userCode="imagePair.userCode"
+            @click.native="itemDetails(imagePair, item.userCode)"
+          />
+          <hr class="pb-5 border-t-8 border-gray-800" />
+        </div>
       </div>
     </div>
     <div
       v-if="selectedItem"
-      class="max-w-xl flex flex-col justify-center relative"
+      class="p-4 max-w-xl flex flex-col justify-start relative"
     >
       <p class="text-3xl font-bold mb-4 text-center">meg + kunst</p>
       <div class="flex flex-col">
@@ -76,20 +81,6 @@
               ').'
           }}
         </p>
-        <div class="flex flex-col items-center my-8">
-          <BButton
-            @click="prøveIgjen()"
-            class="mt-4 w-36 bg-white border border-uia-bg text-uia-bg"
-            >prøv igjen?</BButton
-          >
-        </div>
-      </div>
-
-      <div
-        v-if="thankyou"
-        class="fixed inset-x-0 text-center mt-48 top-0 h-20 text-8xl italic text-uia-bg font-bold"
-      >
-        takk!
       </div>
     </div>
   </div>
@@ -97,10 +88,10 @@
 
 <script>
 import axios from 'axios'
-import BButton from '~/components/Button.vue'
+import ImagePair from '~/components/ImagePair.vue'
 export default {
   components: {
-    BButton
+    ImagePair
   },
   data() {
     return {
@@ -109,10 +100,12 @@ export default {
       museumImage: undefined,
       userCode: '',
       loading: true,
-      thankyou: false,
-      sharedImages: [],
+      imagesByUser: [],
+      imagesByDay: [],
       selectedUserCode: undefined,
-      selectedItem: undefined
+      selectedItem: undefined,
+      grandTotal: 0,
+      dateViewMode: true
     }
   },
   computed: {
@@ -131,18 +124,53 @@ export default {
     this.loading = true
     this.userCode = window.localStorage.getItem('userCode')
     axios.get('/api/allshared').then((response) => {
-      this.sharedImages = response.data
+      if (response.data && Array.isArray(response.data)) {
+        this.imagesByUser = response.data
+        this.grandTotal = this.imagesByUser.reduce(
+          (acc, curr) => (acc += curr.imageRecords.length),
+          0
+        )
+        let tempImages = []
+        this.imagesByUser.forEach((i) => {
+          i.imageRecords.forEach((ir) => {
+            const newEntry = {
+              ...ir,
+              userCode: i.userCode,
+              latest: i.latest
+            }
+            tempImages.push(newEntry)
+          })
+        })
+        tempImages = this.sortByDate(tempImages)
+        this.imagesByDay = []
+        if (tempImages.length > 0) {
+          let currentDay = new Date(tempImages[0].created).getDate()
+          let currentDayImages = []
+          tempImages.forEach((ti) => {
+            const tiDay = new Date(ti.created).getDate()
+            if (tiDay === currentDay) {
+              currentDayImages.push(ti)
+            } else {
+              currentDay = tiDay
+              this.imagesByDay.push(currentDayImages)
+              currentDayImages = [ti]
+            }
+          })
+        }
+      }
     })
   },
   methods: {
-    prøveIgjen() {
-      this.$router.push('/ai')
-    },
-    showThankyou() {
-      this.thankyou = true
-      window.setTimeout(() => {
-        this.thankyou = false
-      }, 2000)
+    dayStringForMillis(millis) {
+      const d = new Date(millis)
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }
+      const formatted = new Intl.DateTimeFormat('en-US', options).format(d)
+      return formatted
     },
     itemDetails(item, userCode) {
       this.selectedUserCode = userCode
@@ -165,16 +193,12 @@ export default {
       )
     },
     sortByDate(records) {
-      return records.sort((a, b) => {
-        return a.created < b.created ? 1 : -1
-      })
-    },
-    timeStringForMillis(millis) {
-      const d = new Date(millis)
-      const hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours()
-      const minutes =
-        d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes()
-      return `${hours}:${minutes} - ${d.getDay()}/${d.getMonth()}/${d.getFullYear()}`
+      if (records) {
+        return records.sort((a, b) => {
+          return a.created < b.created ? 1 : -1
+        })
+      }
+      return []
     }
   }
 }

@@ -1,5 +1,10 @@
 <template>
-  <div v-cloak @drop.prevent="addFile" @dragover.prevent>
+  <div
+    v-cloak
+    @drop.prevent="addFile"
+    @dragover.prevent
+    class="border-gray-500 border-dashed border-4 p-4"
+  >
     <h2>Files to Upload (Drag them over)</h2>
     <ul>
       <li v-for="file in files">

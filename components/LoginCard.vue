@@ -1,12 +1,12 @@
 <template>
   <div
     :class="{ badPassword: invalidLogin }"
-    class="bg-white rounded-md shadow-md p-6 flex flex-col"
+    class="bg-white rounded-md shadow-md p-6 flex flex-col flex-grow-0"
   >
     <p v-if="formError" class="error">
       {{ formError }}
     </p>
-    <div class="flex flex-row justify-between">
+    <div class="flex flex-row flex-grow-0">
       <span class="text-sm px-2">Username</span>
       <input
         v-model="formUsername"
@@ -15,7 +15,7 @@
         name="username"
       />
     </div>
-    <div class="flex flex-row justify-between pt-2">
+    <div class="flex flex-row pt-2">
       <span class="text-sm px-2">Password</span>
       <input
         v-model="formPassword"
@@ -25,14 +25,14 @@
         name="password"
       />
     </div>
-    <div class="w-full pt-4 flex flex-row justify-between">
+    <div class="w-full pt-4 flex flex-row">
       <BButton
         :applyClasses="'h-6'"
         @click="$emit('cancel-login')"
         class="bg-gray-300"
         ><span class="text-sm font-bold px-4">avbryt</span></BButton
       >
-      <BButton :applyClasses="'h-6'" @click="login()" class="bg-gray-300"
+      <BButton :applyClasses="'h-6'" @click="login()" class="bg-gray-300 ml-2"
         ><span class="text-sm font-bold px-4">logg in</span></BButton
       >
     </div>

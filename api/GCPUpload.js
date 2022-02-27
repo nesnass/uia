@@ -187,11 +187,24 @@ function send(req, res, next) {
       const userCode = req.searchParams.get('user-code') || uuidv4()
 
       function filterForFaces(faces, matches) {
-        return matches.find(
+        let result
+        result = matches.find(
           (m) =>
             dimuSkmu[m.filename] &&
-            dimuSkmu[m.filename].number_of_detected_faces <= faces
+            dimuSkmu[m.filename].number_of_detected_faces === faces
         )
+        if (result) {
+          result.faces = dimuSkmu[result.filename].number_of_detected_faces
+          return result
+        } else {
+          result = matches.find(
+            (m) =>
+              dimuSkmu[m.filename] &&
+              dimuSkmu[m.filename].number_of_detected_faces <= faces
+          )
+          result.faces = dimuSkmu[result.filename].number_of_detected_faces
+          return result
+        }
       }
 
       if (!['image/jpg', 'image/jpeg', 'image/png'].includes(fileType)) {
@@ -223,8 +236,7 @@ function send(req, res, next) {
                     const faces = labels.number_of_faces
                       ? labels.number_of_faces[0]
                       : 0
-                    const bestMatch =
-                      faces > 0 ? filterForFaces(faces, matches) : matches[0]
+                    const bestMatch = filterForFaces(faces, matches)
                     updateUserInDB({
                       userCode,
                       fileName,

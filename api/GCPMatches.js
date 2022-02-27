@@ -102,7 +102,6 @@ const allSharedItems = function(req, res) {
         const keys = Object.keys(userRecord.imageRecords)
         userRecord.imageRecords = keys
           .filter((k) => userRecord.imageRecords[k].shared)
-          // .map((k) => userRecord.imageRecords[k])
           .map((k) => {
             const r = userRecord.imageRecords[k]
             r.created = r.created.toMillis()
@@ -176,7 +175,8 @@ const pdf = (req, res) => {
         // If you use 'inline' here it will automatically open the PDF
         res.setHeader(
           'Content-disposition',
-          'attachment; filename="' + filename + '"'
+          // 'attachment; filename="' + filename + '"'
+          'inline; filename="' + filename + '"'
         )
         res.setHeader('Content-type', 'application/pdf')
 
